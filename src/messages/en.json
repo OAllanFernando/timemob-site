@@ -34,13 +34,44 @@
     "dashboard": "Dashboard",
     "publicAbout": "About us",
     "publicHowItWorks": "How it works",
-    "publicContact": "Contact"
+    "publicContact": "Contact",
+    "publicProperties": "Properties",
+    "admin": {
+      "dashboard": "Dashboard",
+      "leads": "Leads",
+      "properties": "Properties",
+      "visits": "Visits",
+      "team": "Team",
+      "branches": "Branches"
+    },
+    "client": {
+      "home": "My account",
+      "visits": "My visits",
+      "favorites": "Favorites",
+      "profile": "Profile"
+    }
   },
   "sidebar": {
     "eyebrow": "Client portal",
     "groupNavigation": "Navigation",
     "supportTitle": "Need a hand?",
-    "supportBody": "Reach out to your broker"
+    "supportBody": "Reach out to your broker",
+    "eyebrowByVariant": {
+      "admin": "Team portal",
+      "owner": "Agency portal",
+      "client": "Your area"
+    }
+  },
+  "pages": {
+    "placeholder": {
+      "title": "Coming soon",
+      "body": "This screen will be available soon."
+    },
+    "catalog": {
+      "title": "Catalog coming soon",
+      "body": "We are curating a hand-picked selection for you.",
+      "back": "Back to home"
+    }
   },
   "dashboard": {
     "greeting": "Hello, {name}",
@@ -56,6 +87,7 @@
     "heroSubtitle": "Boutique service for people looking for a property that fits their story. Local curation, flexible scheduling, honest conversation.",
     "ctaLogin": "Access my account",
     "ctaSecondary": "How it works",
+    "ctaCatalog": "Browse properties",
     "about": {
       "eyebrow": "About us",
       "title": "An agency that knows your neighborhood.",

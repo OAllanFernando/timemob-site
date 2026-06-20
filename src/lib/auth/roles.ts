@@ -28,3 +28,15 @@ export function resolveProfileRole(authorities: string[] | undefined): ProfileRo
 export function hasRole(authorities: string[] | undefined, role: Role) {
     return !!authorities?.includes(role);
 }
+
+export type SiteArea = 'admin' | 'owner' | 'client' | 'fallback';
+
+export function resolveAreaForRole(authorities: string[] | undefined): SiteArea {
+    if (!authorities?.length) return 'fallback';
+    if (authorities.includes(ROLES.AGENCY_OWNER)) return 'owner';
+    if (authorities.includes(ROLES.MANAGER) || authorities.includes(ROLES.AGENT)) {
+        return 'admin';
+    }
+    if (authorities.includes(ROLES.CUSTOMER)) return 'client';
+    return 'fallback';
+}

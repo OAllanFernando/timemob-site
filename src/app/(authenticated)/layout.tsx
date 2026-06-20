@@ -5,9 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { useAuth } from '@/hooks/use-auth';
-import { AppSidebar } from '@/components/layout/app-sidebar';
-import { Topbar } from '@/components/layout/topbar';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 export default function AuthenticatedLayout({
     children,
@@ -32,13 +29,5 @@ export default function AuthenticatedLayout({
         );
     }
 
-    return (
-        <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset className="min-w-0">
-                <Topbar />
-                <main className="flex min-w-0 flex-1 flex-col p-6">{children}</main>
-            </SidebarInset>
-        </SidebarProvider>
-    );
+    return <>{children}</>;
 }

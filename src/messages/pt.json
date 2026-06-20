@@ -34,13 +34,44 @@
     "dashboard": "Painel",
     "publicAbout": "Sobre nós",
     "publicHowItWorks": "Como funciona",
-    "publicContact": "Contato"
+    "publicContact": "Contato",
+    "publicProperties": "Imóveis",
+    "admin": {
+      "dashboard": "Painel",
+      "leads": "Leads",
+      "properties": "Imóveis",
+      "visits": "Visitas",
+      "team": "Equipe",
+      "branches": "Filiais"
+    },
+    "client": {
+      "home": "Minha conta",
+      "visits": "Minhas visitas",
+      "favorites": "Favoritos",
+      "profile": "Perfil"
+    }
   },
   "sidebar": {
     "eyebrow": "Painel do cliente",
     "groupNavigation": "Navegação",
     "supportTitle": "Precisa de ajuda?",
-    "supportBody": "Fale com seu corretor"
+    "supportBody": "Fale com seu corretor",
+    "eyebrowByVariant": {
+      "admin": "Painel da equipe",
+      "owner": "Painel da imobiliária",
+      "client": "Sua área"
+    }
+  },
+  "pages": {
+    "placeholder": {
+      "title": "Em construção",
+      "body": "Esta tela estará disponível em breve."
+    },
+    "catalog": {
+      "title": "Catálogo em breve",
+      "body": "Estamos preparando uma seleção curada de imóveis para você.",
+      "back": "Voltar para o início"
+    }
   },
   "dashboard": {
     "greeting": "Olá, {name}",
@@ -56,6 +87,7 @@
     "heroSubtitle": "Atendimento boutique para quem busca um imóvel à altura da própria história. Curadoria local, agenda flexível, conversa franca.",
     "ctaLogin": "Acessar minha conta",
     "ctaSecondary": "Como funciona",
+    "ctaCatalog": "Ver imóveis",
     "about": {
       "eyebrow": "Sobre nós",
       "title": "Uma imobiliária que conhece o seu bairro.",

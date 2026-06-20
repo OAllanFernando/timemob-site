@@ -7,6 +7,7 @@ import { LocaleSwitcher } from '@/components/layout/locale-switcher';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
 
 const PUBLIC_NAV = [
+    { href: '/imoveis', key: 'publicProperties' as const },
     { href: '#about', key: 'publicAbout' as const },
     { href: '#how-it-works', key: 'publicHowItWorks' as const },
     { href: '#contact', key: 'publicContact' as const },
@@ -82,6 +83,9 @@ export default async function HomePage() {
                                     <Link href="/login">{t('ctaLogin')}</Link>
                                 </Button>
                                 <Button asChild size="lg" variant="outline">
+                                    <Link href="/imoveis">{t('ctaCatalog')}</Link>
+                                </Button>
+                                <Button asChild size="lg" variant="ghost">
                                     <Link href="#how-it-works">{t('ctaSecondary')}</Link>
                                 </Button>
                             </div>

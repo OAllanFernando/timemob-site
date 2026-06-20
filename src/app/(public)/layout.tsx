@@ -7,6 +7,7 @@ import { LocaleSwitcher } from '@/components/layout/locale-switcher';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
 
 const PUBLIC_NAV = [
+    { href: '/imoveis', key: 'publicProperties' as const },
     { href: '/#about', key: 'publicAbout' as const },
     { href: '/#how-it-works', key: 'publicHowItWorks' as const },
     { href: '/#contact', key: 'publicContact' as const },
