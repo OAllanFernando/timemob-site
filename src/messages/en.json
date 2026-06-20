@@ -1,0 +1,137 @@
+{
+  "brand": {
+    "name": "TimeMob",
+    "siteName": "TimeMob Site",
+    "tagline": "Find your next property"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in to your account",
+      "subtitle": "Follow up on properties, visits and proposals in one place",
+      "atmosphere": "Welcome back",
+      "username": "Username or email",
+      "usernamePlaceholder": "your.username",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "rememberMe": "Remember me",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "forgotPassword": "Forgot password",
+      "errors": {
+        "invalidCredentials": "Invalid username or password",
+        "network": "Could not reach the server",
+        "unknown": "An unexpected error occurred"
+      }
+    },
+    "forgotPassword": {
+      "title": "Recover access",
+      "subtitle": "Password reset will be available here soon",
+      "back": "Back to sign in"
+    },
+    "logout": "Sign out"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "publicAbout": "About us",
+    "publicHowItWorks": "How it works",
+    "publicContact": "Contact"
+  },
+  "sidebar": {
+    "eyebrow": "Client portal",
+    "groupNavigation": "Navigation",
+    "supportTitle": "Need a hand?",
+    "supportBody": "Reach out to your broker"
+  },
+  "dashboard": {
+    "greeting": "Hello, {name}",
+    "subtitle": "Welcome to your dashboard",
+    "statsPlaceholder": {
+      "title": "Your journey at a glance",
+      "description": "Soon you will track everything from here."
+    }
+  },
+  "landing": {
+    "eyebrow": "Curated properties",
+    "heroTitle": "Find the home that matches your pace.",
+    "heroSubtitle": "Boutique service for people looking for a property that fits their story. Local curation, flexible scheduling, honest conversation.",
+    "ctaLogin": "Access my account",
+    "ctaSecondary": "How it works",
+    "about": {
+      "eyebrow": "About us",
+      "title": "An agency that knows your neighborhood.",
+      "body": "For over a decade we have brokered sales and rentals across the most sought-after parts of the city. We keep a small, carefully tended portfolio — choosing a home should feel calm, not rushed."
+    },
+    "howItWorks": {
+      "eyebrow": "How it works",
+      "title": "From the first coffee to the keys in hand.",
+      "steps": {
+        "discover": {
+          "title": "Discover",
+          "body": "We curate options aligned with what you are looking for and send a tailored shortlist — no inbox overload."
+        },
+        "schedule": {
+          "title": "Visit",
+          "body": "Book viewings on schedules that work for you. A senior broker accompanies every visit."
+        },
+        "decide": {
+          "title": "Decide",
+          "body": "Full support through the proposal, paperwork and closing. Track each step from your dashboard."
+        }
+      }
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "title": "Let's talk.",
+      "body": "Tell us what you are looking for. We reply within one business day.",
+      "addressLabel": "Address",
+      "address": "Rua das Acácias, 245 — Jardim Paulista, São Paulo/SP",
+      "phoneLabel": "Phone",
+      "phone": "+55 11 4000-0000",
+      "emailLabel": "Email",
+      "email": "contato@suaimobiliaria.com.br"
+    }
+  },
+  "footer": {
+    "tagline": "Curated properties, human service.",
+    "exploreLabel": "Explore",
+    "exploreLinks": {
+      "about": "About us",
+      "howItWorks": "How it works",
+      "contact": "Contact",
+      "login": "Client area"
+    },
+    "contactLabel": "Contact",
+    "socialLabel": "Social",
+    "social": {
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn"
+    },
+    "rights": "All rights reserved."
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "locale": {
+    "switch": "Language",
+    "pt": "Portuguese",
+    "en": "English"
+  },
+  "loader": {
+    "message": "Loading...",
+    "subtitle": "Just a moment"
+  },
+  "errors": {
+    "network": "Connection failed. Check your internet.",
+    "unauthorized": "Session expired. Sign in again.",
+    "forbidden": "Access denied",
+    "not_found": "Resource not found",
+    "validation": "Invalid data. Check the fields.",
+    "conflict": "Conflict processing the request",
+    "server": "Server error. Try again in a moment.",
+    "unknown": "An unexpected error occurred"
+  }
+}

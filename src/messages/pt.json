@@ -1,0 +1,137 @@
+{
+  "brand": {
+    "name": "TimeMob",
+    "siteName": "TimeMob Site",
+    "tagline": "Encontre seu próximo imóvel"
+  },
+  "auth": {
+    "login": {
+      "title": "Entrar na sua conta",
+      "subtitle": "Acompanhe seus imóveis, visitas e propostas em um só lugar",
+      "atmosphere": "Bem-vindo de volta",
+      "username": "Usuário ou e-mail",
+      "usernamePlaceholder": "seu.usuario",
+      "password": "Senha",
+      "passwordPlaceholder": "••••••••",
+      "rememberMe": "Lembrar de mim",
+      "submit": "Entrar",
+      "submitting": "Entrando...",
+      "forgotPassword": "Esqueci minha senha",
+      "errors": {
+        "invalidCredentials": "Usuário ou senha inválidos",
+        "network": "Não foi possível conectar ao servidor",
+        "unknown": "Ocorreu um erro inesperado"
+      }
+    },
+    "forgotPassword": {
+      "title": "Recuperar acesso",
+      "subtitle": "Em breve você poderá redefinir sua senha por aqui",
+      "back": "Voltar para o login"
+    },
+    "logout": "Sair"
+  },
+  "nav": {
+    "dashboard": "Painel",
+    "publicAbout": "Sobre nós",
+    "publicHowItWorks": "Como funciona",
+    "publicContact": "Contato"
+  },
+  "sidebar": {
+    "eyebrow": "Painel do cliente",
+    "groupNavigation": "Navegação",
+    "supportTitle": "Precisa de ajuda?",
+    "supportBody": "Fale com seu corretor"
+  },
+  "dashboard": {
+    "greeting": "Olá, {name}",
+    "subtitle": "Bem-vindo ao seu painel",
+    "statsPlaceholder": {
+      "title": "Resumo da sua jornada",
+      "description": "Em breve você acompanhará tudo por aqui."
+    }
+  },
+  "landing": {
+    "eyebrow": "Imóveis selecionados",
+    "heroTitle": "Encontre o lar que combina com o seu tempo.",
+    "heroSubtitle": "Atendimento boutique para quem busca um imóvel à altura da própria história. Curadoria local, agenda flexível, conversa franca.",
+    "ctaLogin": "Acessar minha conta",
+    "ctaSecondary": "Como funciona",
+    "about": {
+      "eyebrow": "Sobre nós",
+      "title": "Uma imobiliária que conhece o seu bairro.",
+      "body": "Há mais de uma década intermediamos vendas e locações nas regiões mais procuradas da cidade. Trabalhamos com um portfólio enxuto e bem cuidado, porque acreditamos que escolher um imóvel é um momento de calma, não de urgência."
+    },
+    "howItWorks": {
+      "eyebrow": "Como funciona",
+      "title": "Do primeiro café à entrega das chaves.",
+      "steps": {
+        "discover": {
+          "title": "Descubra",
+          "body": "Filtramos opções alinhadas ao que você procura e enviamos uma seleção sob medida — sem inundar a sua caixa de entrada."
+        },
+        "schedule": {
+          "title": "Visite",
+          "body": "Marque visitas em horários que funcionam para você. Um corretor da casa acompanha cada agendamento."
+        },
+        "decide": {
+          "title": "Decida",
+          "body": "Suporte completo na proposta, documentação e fechamento. Você acompanha cada etapa pelo seu painel."
+        }
+      }
+    },
+    "contact": {
+      "eyebrow": "Contato",
+      "title": "Vamos conversar.",
+      "body": "Conte para a gente o que você procura. Respondemos em até um dia útil.",
+      "addressLabel": "Endereço",
+      "address": "Rua das Acácias, 245 — Jardim Paulista, São Paulo/SP",
+      "phoneLabel": "Telefone",
+      "phone": "+55 11 4000-0000",
+      "emailLabel": "E-mail",
+      "email": "contato@suaimobiliaria.com.br"
+    }
+  },
+  "footer": {
+    "tagline": "Imóveis com curadoria, atendimento humano.",
+    "exploreLabel": "Navegação",
+    "exploreLinks": {
+      "about": "Sobre nós",
+      "howItWorks": "Como funciona",
+      "contact": "Contato",
+      "login": "Área do cliente"
+    },
+    "contactLabel": "Contato",
+    "socialLabel": "Redes sociais",
+    "social": {
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn"
+    },
+    "rights": "Todos os direitos reservados."
+  },
+  "theme": {
+    "toggle": "Alternar tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
+  "locale": {
+    "switch": "Idioma",
+    "pt": "Português",
+    "en": "Inglês"
+  },
+  "loader": {
+    "message": "Carregando...",
+    "subtitle": "Aguarde um instante"
+  },
+  "errors": {
+    "network": "Falha de conexão. Verifique sua internet.",
+    "unauthorized": "Sessão expirada. Faça login novamente.",
+    "forbidden": "Acesso negado",
+    "not_found": "Recurso não encontrado",
+    "validation": "Dados inválidos. Confira os campos.",
+    "conflict": "Conflito ao processar",
+    "server": "Erro no servidor. Tente novamente em instantes.",
+    "unknown": "Ocorreu um erro inesperado"
+  }
+}

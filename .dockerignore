@@ -1,0 +1,90 @@
+# Arquivos e diretórios a serem ignorados no build Docker
+# Isso otimiza o build excluindo arquivos desnecessários
+
+# Diretórios de build e cache
+target/
+node_modules/
+.git/
+.gitignore
+
+# Arquivos de IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.log
+*.swp
+*.swo
+*~
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de configuração local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Arquivos de teste
+src/test/
+
+# Documentação
+README.md
+*.md
+
+# Arquivos de CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile
+
+# Arquivos de backup
+*.bak
+*.backup
+
+# Arquivos de configuração do Maven (manter apenas os necessários)
+.mvn/wrapper/maven-wrapper.jar
+
+# Arquivos de relatórios
+site/
+jacoco.exec
+jacoco-it.exec
+
+# Arquivos de checkstyle
+checkstyle-result.xml
+checkstyle-checker.xml
+checkstyle-cachefile
+
+# Arquivos de SonarQube
+.sonar/
+# sonar-project.properties - necessário para o build
+
+# Arquivos de Docker existentes (se houver)
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# Arquivos de configuração específicos do ambiente
+src/main/resources/config/application-dev.yml
+src/main/resources/config/application-test*.yml
+src/main/resources/config/tls/
+
+# Arquivos de banco de dados local
+*.db
+*.sqlite
+*.h2.db
+
+# Arquivos de logs
+logs/
+*.log
+
+# Arquivos de cache do Maven
+.m2/
