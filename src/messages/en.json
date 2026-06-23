@@ -5,6 +5,10 @@
     "tagline": "Find your next property"
   },
   "auth": {
+    "tabs": {
+      "login": "Sign in",
+      "register": "Create account"
+    },
     "login": {
       "title": "Sign in to your account",
       "subtitle": "Follow up on properties, visits and proposals in one place",
@@ -17,10 +21,79 @@
       "submit": "Sign in",
       "submitting": "Signing in...",
       "forgotPassword": "Forgot password",
+      "noAccount": "Don't have an account?",
       "errors": {
         "invalidCredentials": "Invalid username or password",
         "network": "Could not reach the server",
         "unknown": "An unexpected error occurred"
+      }
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "In a few minutes you'll be tracking properties, visits and proposals from your dashboard",
+      "fillInterestProfileToggle": "I want to fill in my interest profile now",
+      "fields": {
+        "name": "Full name",
+        "namePlaceholder": "Your name",
+        "email": "Email",
+        "emailPlaceholder": "you@email.com",
+        "phone": "Phone / WhatsApp",
+        "phonePlaceholder": "(11) 90000-0000",
+        "cpf": "CPF",
+        "cpfPlaceholder": "000.000.000-00",
+        "password": "Password",
+        "passwordPlaceholder": "••••••••",
+        "passwordHint": "At least 8 characters",
+        "confirmPassword": "Confirm password",
+        "acceptTerms": "I accept the",
+        "termsLink": "Terms of Use and Privacy Policy",
+        "optional": "optional"
+      },
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "success": "Account created successfully!",
+      "hasAccount": "Already have an account?",
+      "errors": {
+        "emailExists": "This email already has an account. Use the Sign in tab.",
+        "cpfExists": "This CPF is already registered in our base.",
+        "cnpjExists": "This CNPJ is already registered in our base.",
+        "network": "Could not reach the server",
+        "validation": "Please review the data entered",
+        "unknown": "An unexpected error occurred",
+        "interestProfilePartial": "Account created, but we couldn't save your interest profile. Try from your account area."
+      }
+    },
+    "interestProfile": {
+      "intro": "Fill in what you know — you can update everything later from your dashboard.",
+      "fields": {
+        "propertyType": "Property type",
+        "businessType": "I want to",
+        "minAmount": "Min price (R$)",
+        "maxAmount": "Max price (R$)",
+        "bedrooms": "Bedrooms",
+        "suites": "Suites",
+        "bathrooms": "Bathrooms",
+        "parkingSpots": "Parking",
+        "totalArea": "Total area (m²)",
+        "usefulArea": "Usable area (m²)",
+        "notes": "Neighborhoods & notes",
+        "notesPlaceholder": "Neighborhoods you like, priorities, deal-breakers..."
+      },
+      "propertyTypes": {
+        "APARTMENT": "Apartment",
+        "HOUSE": "House",
+        "TWO_STORY_HOUSE": "Two-story house",
+        "STUDIO": "Studio",
+        "KIT_NET": "Kitnet",
+        "COVERAGE": "Penthouse",
+        "LAND": "Land",
+        "FARM": "Farm / ranch",
+        "OTHER": "Other"
+      },
+      "businessTypes": {
+        "SALE": "Buy",
+        "RENT": "Rent",
+        "DAILY_RENT": "Short-term"
       }
     },
     "forgotPassword": {
@@ -28,7 +101,78 @@
       "subtitle": "Password reset will be available here soon",
       "back": "Back to sign in"
     },
+    "crossTenant": {
+      "title": "Authorize sharing your data",
+      "intro": "You're accessing the site of <tenant></tenant>, a TimeMob network partner. Read the terms below and, if you agree, authorize sharing your name, email and phone with this agency so they can reach out.",
+      "fallbackBody": "By continuing, you authorize sharing your name, email and phone with this agency.",
+      "termsLabel": "Agency terms",
+      "accept": "Accept and continue",
+      "decline": "No, sign out",
+      "submitting": "Confirming...",
+      "success": "All set! You can use the site now.",
+      "errors": {
+        "network": "Could not reach the server",
+        "unknown": "An unexpected error occurred"
+      }
+    },
     "logout": "Sign out"
+  },
+  "lead": {
+    "modal": {
+      "title": "Let's talk",
+      "subtitle": "Tell us what you're looking for. A broker will be in touch shortly."
+    },
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "you@email.com",
+      "phone": "Phone / WhatsApp",
+      "phonePlaceholder": "(11) 90000-0000",
+      "message": "Message",
+      "messagePlaceholder": "Anything we should know? (optional)",
+      "source": "What brings you here?",
+      "interestTags": "Interest tags (optional)",
+      "password": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "confirmPassword": "Confirm password",
+      "acceptTerms": "I accept the",
+      "termsLink": "Terms of Use and Privacy Policy"
+    },
+    "sources": {
+      "PROPERTY_TALK": "Learn more about this property",
+      "KNOW_MORE": "Get similar options",
+      "GENERIC_CONTACT": "Talk to a broker now"
+    },
+    "toggles": {
+      "showDetails": "More contact details",
+      "createAccount": "Also create a full account to follow everything",
+      "fillInterestProfile": "I want to fill in my interest profile",
+      "requiresAccount": "Available when creating an account"
+    },
+    "submit": "Send",
+    "submitting": "Sending...",
+    "success": {
+      "title": "We received your interest!",
+      "body": "A broker will be in touch shortly. Watch your inbox for updates.",
+      "close": "Close"
+    },
+    "errors": {
+      "emailExists": "This email already has an account. Use the Sign in tab to access it.",
+      "cpfExists": "This CPF is already registered in our base.",
+      "cnpjExists": "This CNPJ is already registered in our base.",
+      "leadPartial": "Account created, but we couldn't record your interest. Try again from your account area.",
+      "interestProfilePartial": "Account created, but we couldn't save your interest profile. Try from your account area.",
+      "network": "Could not reach the server",
+      "validation": "Please review the data entered",
+      "unknown": "An unexpected error occurred"
+    }
+  },
+  "terms": {
+    "title": "Terms of Use and Privacy Policy",
+    "subtitle": "Document under review",
+    "body": "This is placeholder content. Definitive terms will be published soon by each partner agency.",
+    "placeholder": "If you have any questions, contact support."
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -115,6 +259,7 @@
       "eyebrow": "Contact",
       "title": "Let's talk.",
       "body": "Tell us what you are looking for. We reply within one business day.",
+      "cta": "Get in touch",
       "addressLabel": "Address",
       "address": "Rua das Acácias, 245 — Jardim Paulista, São Paulo/SP",
       "phoneLabel": "Phone",

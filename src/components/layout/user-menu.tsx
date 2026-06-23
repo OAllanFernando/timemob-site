@@ -15,7 +15,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-function getInitials(firstName?: string, lastName?: string, login?: string) {
+function getInitials(firstName?: string | null, lastName?: string | null, login?: string | null) {
     const first = firstName?.[0];
     const last = lastName?.[0];
     if (first && last) return `${first}${last}`.toUpperCase();

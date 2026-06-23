@@ -17,6 +17,67 @@ export function isErrorKey(err: unknown, key: string): boolean {
     return raw === key || raw === `error.${key}`;
 }
 
+// =============================================================================
+// Conflict detectors — when the back leaks a raw constraint name in the error
+// message instead of returning a clean 409 + errorKey, we fall back to string
+// matching the constraint name. Remove the message-based checks once the back
+// catches DataIntegrityViolationException properly.
+// =============================================================================
+
+const CPF_CONSTRAINT = 'ux_customer__natural_person_document';
+const CNPJ_CONSTRAINT = 'ux_customer__entity_document';
+
+function errorMessageOf(err: unknown): string {
+    if (err instanceof DomainError) return err.message ?? '';
+    if (err instanceof Error) return err.message ?? '';
+    return '';
+}
+
+export function isEmailConflict(err: unknown): boolean {
+    if (!(err instanceof DomainError)) return false;
+    if (err.code === 'conflict') return true;
+    const key = err.errorKey ?? '';
+    return key.includes('userexists') || key.includes('emailexists');
+}
+
+export function isCpfConflict(err: unknown): boolean {
+    if (!(err instanceof DomainError)) return false;
+    const key = err.errorKey ?? '';
+    if (key.includes('cpfexists') || key.includes('naturalpersondocument')) return true;
+    return errorMessageOf(err).includes(CPF_CONSTRAINT);
+}
+
+export function isCnpjConflict(err: unknown): boolean {
+    if (!(err instanceof DomainError)) return false;
+    const key = err.errorKey ?? '';
+    if (key.includes('cnpjexists') || key.includes('entitydocument')) return true;
+    return errorMessageOf(err).includes(CNPJ_CONSTRAINT);
+}
+
+const SQL_LEAK_FRAGMENTS = [
+    'could not execute',
+    'violates unique constraint',
+    'violates foreign key',
+    'duplicate key value',
+    'org.hibernate',
+    'org.postgresql',
+    'org.springframework',
+    'JpaSystemException',
+    'DataIntegrityViolationException',
+    'SQLException',
+];
+
+/**
+ * Returns true when the error message looks like a raw back-end stack/SQL
+ * leak rather than a user-safe message. Use this to decide whether to surface
+ * `err.message` to the user (clean) or swap for a generic fallback (leaked).
+ */
+export function looksLikeBackendLeak(err: unknown): boolean {
+    const message = errorMessageOf(err);
+    if (!message) return false;
+    return SQL_LEAK_FRAGMENTS.some((frag) => message.includes(frag));
+}
+
 interface JhipsterFieldError {
     objectName?: string;
     field?: string;

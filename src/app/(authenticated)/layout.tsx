@@ -5,19 +5,20 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { useAuth } from '@/hooks/use-auth';
+import { CrossTenantConsent } from '@/components/auth/cross-tenant-consent';
 
 export default function AuthenticatedLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const { authenticated, loading } = useAuth();
+    const { authenticated, loading, crossTenant } = useAuth();
     const router = useRouter();
     const t = useTranslations('loader');
 
     useEffect(() => {
         if (!loading && !authenticated) {
-            router.replace('/login');
+            router.replace('/entrar');
         }
     }, [loading, authenticated, router]);
 
@@ -27,6 +28,10 @@ export default function AuthenticatedLayout({
                 {t('message')}
             </div>
         );
+    }
+
+    if (crossTenant) {
+        return <CrossTenantConsent />;
     }
 
     return <>{children}</>;

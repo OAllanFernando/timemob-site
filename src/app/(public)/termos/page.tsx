@@ -1,11 +1,9 @@
-import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default async function ForgotPasswordPage() {
-    const t = await getTranslations('auth.forgotPassword');
+export default async function TermsPage() {
+    const t = await getTranslations('terms');
     const tBrand = await getTranslations('brand');
 
     return (
@@ -19,10 +17,9 @@ export default async function ForgotPasswordPage() {
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
             </CardHeader>
-            <CardContent className="px-8 pb-8">
-                <Button asChild size="lg" variant="outline" className="w-full">
-                    <Link href="/entrar">{t('back')}</Link>
-                </Button>
+            <CardContent className="space-y-4 px-8 pb-8 text-sm leading-relaxed text-muted-foreground">
+                <p>{t('body')}</p>
+                <p>{t('placeholder')}</p>
             </CardContent>
         </Card>
     );

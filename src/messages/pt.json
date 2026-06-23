@@ -5,6 +5,10 @@
     "tagline": "Encontre seu próximo imóvel"
   },
   "auth": {
+    "tabs": {
+      "login": "Entrar",
+      "register": "Criar conta"
+    },
     "login": {
       "title": "Entrar na sua conta",
       "subtitle": "Acompanhe seus imóveis, visitas e propostas em um só lugar",
@@ -17,10 +21,79 @@
       "submit": "Entrar",
       "submitting": "Entrando...",
       "forgotPassword": "Esqueci minha senha",
+      "noAccount": "Ainda não tem conta?",
       "errors": {
         "invalidCredentials": "Usuário ou senha inválidos",
         "network": "Não foi possível conectar ao servidor",
         "unknown": "Ocorreu um erro inesperado"
+      }
+    },
+    "register": {
+      "title": "Criar sua conta",
+      "subtitle": "Em poucos minutos você acompanha imóveis, visitas e propostas pelo seu painel",
+      "fillInterestProfileToggle": "Quero preencher meu perfil de interesse agora",
+      "fields": {
+        "name": "Nome completo",
+        "namePlaceholder": "Como você se chama",
+        "email": "E-mail",
+        "emailPlaceholder": "voce@email.com",
+        "phone": "Telefone / WhatsApp",
+        "phonePlaceholder": "(11) 90000-0000",
+        "cpf": "CPF",
+        "cpfPlaceholder": "000.000.000-00",
+        "password": "Senha",
+        "passwordPlaceholder": "••••••••",
+        "passwordHint": "Mínimo de 8 caracteres",
+        "confirmPassword": "Confirmar senha",
+        "acceptTerms": "Aceito os",
+        "termsLink": "Termos de Uso e Política de Privacidade",
+        "optional": "opcional"
+      },
+      "submit": "Criar conta",
+      "submitting": "Criando conta...",
+      "success": "Conta criada com sucesso!",
+      "hasAccount": "Já tem conta?",
+      "errors": {
+        "emailExists": "Esse e-mail já tem conta. Use a aba Entrar.",
+        "cpfExists": "Esse CPF já está cadastrado em nossa base.",
+        "cnpjExists": "Esse CNPJ já está cadastrado em nossa base.",
+        "network": "Não foi possível conectar ao servidor",
+        "validation": "Confira os dados informados",
+        "unknown": "Ocorreu um erro inesperado",
+        "interestProfilePartial": "Conta criada, mas não conseguimos registrar seu perfil de interesse. Tente pela área logada."
+      }
+    },
+    "interestProfile": {
+      "intro": "Preencha o que souber — você pode atualizar depois pelo seu painel.",
+      "fields": {
+        "propertyType": "Tipo de imóvel",
+        "businessType": "Quero",
+        "minAmount": "Valor mínimo (R$)",
+        "maxAmount": "Valor máximo (R$)",
+        "bedrooms": "Quartos",
+        "suites": "Suítes",
+        "bathrooms": "Banheiros",
+        "parkingSpots": "Vagas",
+        "totalArea": "Área total (m²)",
+        "usefulArea": "Área útil (m²)",
+        "notes": "Bairros e observações",
+        "notesPlaceholder": "Bairros de interesse, prioridades, restrições..."
+      },
+      "propertyTypes": {
+        "APARTMENT": "Apartamento",
+        "HOUSE": "Casa",
+        "TWO_STORY_HOUSE": "Sobrado",
+        "STUDIO": "Studio",
+        "KIT_NET": "Kitnet",
+        "COVERAGE": "Cobertura",
+        "LAND": "Terreno",
+        "FARM": "Chácara / sítio",
+        "OTHER": "Outro"
+      },
+      "businessTypes": {
+        "SALE": "Comprar",
+        "RENT": "Alugar",
+        "DAILY_RENT": "Temporada"
       }
     },
     "forgotPassword": {
@@ -28,7 +101,78 @@
       "subtitle": "Em breve você poderá redefinir sua senha por aqui",
       "back": "Voltar para o login"
     },
+    "crossTenant": {
+      "title": "Autorize o compartilhamento dos seus dados",
+      "intro": "Você está acessando o site da <tenant></tenant>, parceira da rede TimeMob. Leia os termos abaixo e, se concordar, autorize o compartilhamento do seu nome, e-mail e telefone com essa imobiliária para que ela possa entrar em contato.",
+      "fallbackBody": "Ao continuar, você autoriza o compartilhamento do seu nome, e-mail e telefone com essa imobiliária.",
+      "termsLabel": "Termos da imobiliária",
+      "accept": "Aceitar e continuar",
+      "decline": "Não, sair",
+      "submitting": "Confirmando...",
+      "success": "Tudo certo! Você já pode usar o site.",
+      "errors": {
+        "network": "Não foi possível conectar ao servidor",
+        "unknown": "Ocorreu um erro inesperado"
+      }
+    },
     "logout": "Sair"
+  },
+  "lead": {
+    "modal": {
+      "title": "Vamos conversar",
+      "subtitle": "Conte para a gente o que você procura. Um corretor entra em contato em breve."
+    },
+    "fields": {
+      "name": "Nome",
+      "namePlaceholder": "Como você se chama",
+      "email": "E-mail",
+      "emailPlaceholder": "voce@email.com",
+      "phone": "Telefone / WhatsApp",
+      "phonePlaceholder": "(11) 90000-0000",
+      "message": "Mensagem",
+      "messagePlaceholder": "Algum detalhe que devemos saber? (opcional)",
+      "source": "Qual seu interesse?",
+      "interestTags": "Tags de interesse (opcional)",
+      "password": "Senha",
+      "passwordPlaceholder": "Mínimo 8 caracteres",
+      "confirmPassword": "Confirmar senha",
+      "acceptTerms": "Aceito os",
+      "termsLink": "Termos de Uso e Política de Privacidade"
+    },
+    "sources": {
+      "PROPERTY_TALK": "Conhecer mais sobre este imóvel",
+      "KNOW_MORE": "Receber outras opções parecidas",
+      "GENERIC_CONTACT": "Falar com um corretor agora"
+    },
+    "toggles": {
+      "showDetails": "Mais detalhes do contato",
+      "createAccount": "Também quero criar uma conta completa para acompanhar tudo",
+      "fillInterestProfile": "Quero preencher meu perfil de interesse",
+      "requiresAccount": "Disponível ao criar uma conta"
+    },
+    "submit": "Enviar",
+    "submitting": "Enviando...",
+    "success": {
+      "title": "Recebemos seu interesse!",
+      "body": "Em breve um corretor entrará em contato. Você pode acompanhar tudo pelo e-mail informado.",
+      "close": "Fechar"
+    },
+    "errors": {
+      "emailExists": "Esse e-mail já tem conta. Use a aba Entrar para acessar.",
+      "cpfExists": "Esse CPF já está cadastrado em nossa base.",
+      "cnpjExists": "Esse CNPJ já está cadastrado em nossa base.",
+      "leadPartial": "Conta criada, mas não conseguimos registrar seu interesse. Tente novamente pela área logada.",
+      "interestProfilePartial": "Conta criada, mas não conseguimos salvar seu perfil de interesse. Tente pela área logada.",
+      "network": "Não foi possível conectar ao servidor",
+      "validation": "Confira os dados informados",
+      "unknown": "Ocorreu um erro inesperado"
+    }
+  },
+  "terms": {
+    "title": "Termos de Uso e Política de Privacidade",
+    "subtitle": "Documento em revisão",
+    "body": "Este é um conteúdo placeholder. Os termos definitivos serão publicados em breve por cada imobiliária parceira.",
+    "placeholder": "Em caso de dúvidas, fale com o atendimento."
   },
   "nav": {
     "dashboard": "Painel",
@@ -115,6 +259,7 @@
       "eyebrow": "Contato",
       "title": "Vamos conversar.",
       "body": "Conte para a gente o que você procura. Respondemos em até um dia útil.",
+      "cta": "Entrar em contato",
       "addressLabel": "Endereço",
       "address": "Rua das Acácias, 245 — Jardim Paulista, São Paulo/SP",
       "phoneLabel": "Telefone",

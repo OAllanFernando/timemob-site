@@ -5,6 +5,7 @@ import { Building2, Compass, Handshake, KeyRound, Mail, MapPin, Phone } from 'lu
 import { Button } from '@/components/ui/button';
 import { LocaleSwitcher } from '@/components/layout/locale-switcher';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
+import { ContactCtaButton } from '@/components/lead/contact-cta-button';
 
 const PUBLIC_NAV = [
     { href: '/imoveis', key: 'publicProperties' as const },
@@ -55,7 +56,7 @@ export default async function HomePage() {
                         <LocaleSwitcher />
                         <ThemeToggle />
                         <Button asChild size="sm" className="ml-2">
-                            <Link href="/login">{t('ctaLogin')}</Link>
+                            <Link href="/entrar">{t('ctaLogin')}</Link>
                         </Button>
                     </div>
                 </div>
@@ -80,7 +81,7 @@ export default async function HomePage() {
                             </p>
                             <div className="flex flex-wrap items-center gap-3 pt-2">
                                 <Button asChild size="lg">
-                                    <Link href="/login">{t('ctaLogin')}</Link>
+                                    <Link href="/entrar">{t('ctaLogin')}</Link>
                                 </Button>
                                 <Button asChild size="lg" variant="outline">
                                     <Link href="/imoveis">{t('ctaCatalog')}</Link>
@@ -158,6 +159,9 @@ export default async function HomePage() {
                             <p className="text-lg leading-relaxed text-muted-foreground">
                                 {t('contact.body')}
                             </p>
+                            <div className="pt-2">
+                                <ContactCtaButton label={t('contact.cta')} />
+                            </div>
                         </div>
 
                         <dl className="space-y-6">
@@ -203,7 +207,7 @@ export default async function HomePage() {
                             {tFooter('exploreLinks.howItWorks')}
                         </FooterLink>
                         <FooterLink href="#contact">{tFooter('exploreLinks.contact')}</FooterLink>
-                        <FooterLink href="/login">{tFooter('exploreLinks.login')}</FooterLink>
+                        <FooterLink href="/entrar">{tFooter('exploreLinks.login')}</FooterLink>
                     </FooterColumn>
 
                     <FooterColumn title={tFooter('contactLabel')}>

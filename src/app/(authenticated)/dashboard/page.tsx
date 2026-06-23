@@ -15,7 +15,7 @@ export default function DashboardPage() {
     useEffect(() => {
         if (loading) return;
         if (!user) {
-            router.replace('/login');
+            router.replace('/entrar');
             return;
         }
         const area = resolveAreaForRole(user.authorities);

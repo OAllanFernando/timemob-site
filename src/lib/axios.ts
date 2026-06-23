@@ -2,7 +2,8 @@ import axios from 'axios';
 
 export const TOKEN_STORAGE_KEY = '@site/token';
 export const UNAUTHORIZED_EVENT = 'site:unauthorized';
-export const TENANT_HEADER = 'X-Tenant-Id';
+export const TENANT_ID_HEADER = 'X-Tenant-Id';
+export const TENANT_SLUG_HEADER = 'X-Tenant-Slug';
 
 export const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -18,9 +19,13 @@ api.interceptors.request.use((config) => {
             config.headers.Authorization = `Bearer ${token}`;
         }
     }
+    const tenantSlug = process.env.NEXT_PUBLIC_TENANT_SLUG;
+    if (tenantSlug) {
+        config.headers[TENANT_SLUG_HEADER] = tenantSlug;
+    }
     const tenantId = process.env.NEXT_PUBLIC_TENANT_ID;
     if (tenantId) {
-        config.headers[TENANT_HEADER] = tenantId;
+        config.headers[TENANT_ID_HEADER] = tenantId;
     }
     return config;
 });

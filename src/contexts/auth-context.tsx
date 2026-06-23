@@ -7,9 +7,13 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TOKEN_STORAGE_KEY, UNAUTHORIZED_EVENT } from '@/lib/axios';
 import { hasSiteAudience, readSiteJwtClaims } from '@/lib/auth/jwt-claims';
 import { authService } from '@/services/auth-service';
-import { userService } from '@/services/user-service';
+import { customerService } from '@/services/customer-service';
 import { DomainError } from '@/types/domain-response';
-import { IAuthContext, ILoginRequest, IUser } from '@/types/auth';
+import { IAuthContext, ILoginRequest } from '@/types/auth';
+import type {
+    ICustomerRegistrationRequest,
+    IMyAccountResponse,
+} from '@/types/customer';
 
 export const AUTH_ME_KEY = ['auth', 'me'] as const;
 
@@ -37,13 +41,13 @@ export function AuthProvider({ children }: Props) {
     const queryClient = useQueryClient();
     const router = useRouter();
 
-    const { data: user, isPending } = useQuery<IUser | null>({
+    const { data: account, isPending } = useQuery<IMyAccountResponse | null>({
         queryKey: AUTH_ME_KEY,
         queryFn: async () => {
             discardStaleAudienceToken();
             if (!readStoredToken()) return null;
             try {
-                const res = await userService.getMe();
+                const res = await customerService.getMe();
                 return res.data;
             } catch (error) {
                 if (error instanceof DomainError && error.code === 'unauthorized') {
@@ -62,15 +66,29 @@ export function AuthProvider({ children }: Props) {
         queryClient.removeQueries({
             predicate: (query) => query.queryKey[0] !== 'auth',
         });
-        const userRes = await userService.getMe();
-        queryClient.setQueryData(AUTH_ME_KEY, userRes.data);
+        const accountRes = await customerService.getMe();
+        queryClient.setQueryData(AUTH_ME_KEY, accountRes.data);
+    }
+
+    async function register(data: ICustomerRegistrationRequest) {
+        await customerService.register(data);
+        await login({
+            username: data.email,
+            password: data.password,
+            rememberMe: true,
+        });
     }
 
     async function logout() {
         localStorage.removeItem(TOKEN_STORAGE_KEY);
         queryClient.setQueryData(AUTH_ME_KEY, null);
         queryClient.removeQueries();
-        router.push('/login');
+        router.push('/entrar');
+    }
+
+    async function refreshAccount() {
+        const res = await customerService.getMe();
+        queryClient.setQueryData(AUTH_ME_KEY, res.data);
     }
 
     useEffect(() => {
@@ -78,7 +96,7 @@ export function AuthProvider({ children }: Props) {
             localStorage.removeItem(TOKEN_STORAGE_KEY);
             queryClient.setQueryData(AUTH_ME_KEY, null);
             queryClient.removeQueries();
-            router.push('/login');
+            router.push('/entrar');
         }
         window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
         return () => {
@@ -89,11 +107,22 @@ export function AuthProvider({ children }: Props) {
     return (
         <AuthContext.Provider
             value={{
-                user: user ?? null,
+                user: account?.user ?? null,
+                role: account?.role ?? null,
+                customer: account?.customer ?? null,
+                memberships: account?.memberships ?? [],
+                manager: account?.manager ?? null,
+                agent: account?.agent ?? null,
+                currentTenant: account?.currentTenant ?? null,
+                crossTenant:
+                    account?.role === 'CUSTOMER' &&
+                    account.currentTenant?.memberOfCurrentTenant === false,
                 loading: isPending,
-                authenticated: !!user,
+                authenticated: !!account,
                 login,
+                register,
                 logout,
+                refreshAccount,
             }}
         >
             {children}

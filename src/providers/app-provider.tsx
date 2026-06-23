@@ -3,6 +3,7 @@
 import { ReactNode } from 'react';
 
 import { AuthProvider } from '@/contexts/auth-context';
+import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 interface Props {
@@ -12,7 +13,10 @@ interface Props {
 export function AppProvider({ children }: Props) {
     return (
         <AuthProvider>
-            <TooltipProvider>{children}</TooltipProvider>
+            <TooltipProvider>
+                {children}
+                <Toaster richColors position="top-right" />
+            </TooltipProvider>
         </AuthProvider>
     );
 }
