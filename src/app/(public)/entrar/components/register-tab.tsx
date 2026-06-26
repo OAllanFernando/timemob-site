@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useAuth } from '@/hooks/use-auth';
 import { customerService } from '@/services/customer-service';
+import { toRegistrationRequest } from '@/lib/transformers/registration';
 import { registerSchema, type RegisterInput } from '@/lib/schemas/register';
 import {
     interestProfileSchema,
@@ -24,30 +25,13 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form } from '@/components/ui/form';
 import { DomainError } from '@/types/domain-response';
-import type { ICustomerRegistrationRequest } from '@/types/customer';
 
 import { RegisterFields } from './register-fields';
+import { RegisterAddressFields } from './register-address-fields';
 import { InterestProfileFields } from './interest-profile-fields';
 
 interface Props {
     onSwitchToLogin?: () => void;
-}
-
-function toRegistrationRequest(input: RegisterInput): ICustomerRegistrationRequest {
-    return {
-        login: input.email,
-        email: input.email,
-        password: input.password,
-        langKey: 'pt-br',
-        customer: {
-            name: input.name,
-            phoneNumber: input.phoneNumber,
-            personType: 'NATURAL_PERSON',
-            naturalPersonDocument: input.naturalPersonDocument,
-        },
-        acceptTerms: true,
-        createMembership: true,
-    };
 }
 
 export function RegisterTab({ onSwitchToLogin }: Props) {
@@ -64,9 +48,16 @@ export function RegisterTab({ onSwitchToLogin }: Props) {
             email: '',
             phoneNumber: '',
             naturalPersonDocument: '',
+            postalCode: '',
+            streetName: '',
+            number: '',
+            complement: '',
+            latitude: null,
+            longitude: null,
             password: '',
             confirmPassword: '',
             acceptTerms: false as unknown as true,
+            acceptContact: true,
             fillInterestProfile: false,
         },
     });
@@ -76,11 +67,12 @@ export function RegisterTab({ onSwitchToLogin }: Props) {
         defaultValues: {
             propertyType: undefined,
             propertyBusinessType: undefined,
-            notes: '',
+            notes: undefined,
         },
     });
 
     const fillInterestProfile = registerForm.watch('fillInterestProfile');
+    const acceptContact = registerForm.watch('acceptContact');
     const [serverError, setServerError] = useState<string | null>(null);
 
     async function onSubmit(values: RegisterInput) {
@@ -93,7 +85,8 @@ export function RegisterTab({ onSwitchToLogin }: Props) {
                 if (profileValid) {
                     try {
                         await customerService.submitInterestProfile(profileForm.getValues());
-                    } catch {
+                    } catch (err) {
+                        console.error('[interest-profile] submit failed', err);
                         toast.error(t('errors.interestProfilePartial'));
                     }
                 }
@@ -165,6 +158,22 @@ export function RegisterTab({ onSwitchToLogin }: Props) {
 
                 <RegisterFields control={registerForm.control} />
 
+                <RegisterAddressFields form={registerForm} />
+
+                <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border bg-muted/30 p-3 text-sm">
+                    <Checkbox
+                        checked={!!acceptContact}
+                        onCheckedChange={(checked) =>
+                            registerForm.setValue('acceptContact', checked === true, {
+                                shouldValidate: false,
+                            })
+                        }
+                    />
+                    <span className="leading-tight text-foreground">
+                        {t('acceptContactToggle')}
+                    </span>
+                </label>
+
                 <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border bg-muted/30 p-3 text-sm">
                     <Checkbox
                         checked={!!fillInterestProfile}
@@ -179,7 +188,7 @@ export function RegisterTab({ onSwitchToLogin }: Props) {
                     </span>
                 </label>
 
-                {fillInterestProfile && <InterestProfileFields control={profileForm.control} />}
+                {fillInterestProfile && <InterestProfileFields form={profileForm} />}
 
                 <Button
                     type="submit"

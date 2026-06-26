@@ -32,6 +32,7 @@
       "title": "Create your account",
       "subtitle": "In a few minutes you'll be tracking properties, visits and proposals from your dashboard",
       "fillInterestProfileToggle": "I want to fill in my interest profile now",
+      "acceptContactToggle": "I allow the agency to contact me about properties",
       "fields": {
         "name": "Full name",
         "namePlaceholder": "Your name",
@@ -48,6 +49,14 @@
         "acceptTerms": "I accept the",
         "termsLink": "Terms of Use and Privacy Policy",
         "optional": "optional"
+      },
+      "address": {
+        "title": "Area of interest",
+        "hint": "Mark the area where you're looking for a property — we use it to show options near you.",
+        "streetName": "Street",
+        "number": "Number",
+        "postalCode": "Postal code",
+        "complement": "Complement"
       },
       "submit": "Create account",
       "submitting": "Creating account...",
@@ -94,6 +103,19 @@
         "SALE": "Buy",
         "RENT": "Rent",
         "DAILY_RENT": "Short-term"
+      },
+      "location": {
+        "title": "Area of interest",
+        "hint": "Search an address or tap the map — city, state and neighborhood fill in automatically.",
+        "state": "State",
+        "city": "City",
+        "neighborhood": "Neighborhood",
+        "stateEmpty": "Pick on the map",
+        "cityEmpty": "Pick on the map",
+        "neighborhoodEmpty": "Pick on the map",
+        "neighborhoodMissing": "No neighborhood detected at this point. Use the map to choose one.",
+        "pickNeighborhood": "Pick neighborhood on map",
+        "changeNeighborhood": "Change neighborhood"
       }
     },
     "forgotPassword": {
@@ -144,6 +166,10 @@
       "KNOW_MORE": "Get similar options",
       "GENERIC_CONTACT": "Talk to a broker now"
     },
+    "location": {
+      "title": "Where are you looking?",
+      "hint": "Allow location access or tap the map to mark your area of interest."
+    },
     "toggles": {
       "showDetails": "More contact details",
       "createAccount": "Also create a full account to follow everything",
@@ -174,6 +200,20 @@
     "body": "This is placeholder content. Definitive terms will be published soon by each partner agency.",
     "placeholder": "If you have any questions, contact support."
   },
+  "maps": {
+    "neighborhoodPicker": {
+      "title": "Pick neighborhood on the map",
+      "description": "Tap or drag the marker to the desired point — we detect the neighborhood from the location.",
+      "helper": "Tap the map or drag the marker to detect the neighborhood.",
+      "searching": "Looking up neighborhood...",
+      "nothingHere": "No results at this point. Try a nearby one.",
+      "noNeighborhoodHere": "This point returned no neighborhood. Try a nearby point.",
+      "geocodeFailed": "Could not reach Google. Please try again.",
+      "cityMismatch": "Heads up: the detected neighborhood seems to be outside {city}.",
+      "confirm": "Use this neighborhood",
+      "cancel": "Cancel"
+    }
+  },
   "nav": {
     "dashboard": "Dashboard",
     "publicAbout": "About us",
@@ -192,7 +232,7 @@
       "home": "My account",
       "visits": "My visits",
       "favorites": "Favorites",
-      "profile": "Profile"
+      "profile": "My profile"
     }
   },
   "sidebar": {
@@ -215,11 +255,81 @@
       "title": "Catalog coming soon",
       "body": "We are curating a hand-picked selection for you.",
       "back": "Back to home"
+    },
+    "leads": {
+      "description": {
+        "manager": "All leads of your agency.",
+        "agent": "The leads assigned to you."
+      },
+      "filter": {
+        "stage": "Filter by stage",
+        "all": "All stages"
+      },
+      "stages": {
+        "NEW": "New",
+        "ASSIGNED": "Assigned",
+        "ACCEPTED": "Accepted",
+        "IN_POOL": "In pool",
+        "CONTACTED": "Contacted",
+        "QUALIFIED": "Qualified",
+        "CONVERTED": "Converted",
+        "DISCARDED": "Discarded"
+      },
+      "empty": {
+        "message": "No leads found."
+      },
+      "error": {
+        "fetch": "Failed to load leads. Please try again."
+      },
+      "pagination": {
+        "info": "Page {current} of {total} · {count} leads",
+        "prev": "Previous",
+        "next": "Next"
+      },
+      "unnamed": "Unnamed",
+      "lastContact": "Last contact",
+      "noContact": "No contact yet",
+      "responsible": "Responsible"
+    },
+    "profile": {
+      "subtitle": "Your interest profiles saved at this agency.",
+      "error": {
+        "fetch": "Failed to load your profile. Please try again."
+      },
+      "empty": {
+        "message": "You haven't saved an interest profile yet."
+      },
+      "card": {
+        "untitled": "Interest profile"
+      },
+      "summary": {
+        "bedrooms": "{count} bd",
+        "upTo": "up to {value}"
+      },
+      "edit": "Edit",
+      "location": {
+        "title": "Location of interest",
+        "hint": "Mark on the map the area where you're looking — we'll fill in state, city and neighborhood automatically to refine the search."
+      },
+      "consent": {
+        "authorize": "I authorize the agency to contact me.",
+        "authorizedAt": "Contact authorized on {date}."
+      },
+      "dialog": {
+        "title": "Edit interest profile",
+        "description": "Update your property preferences."
+      },
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "saved": "Profile updated.",
+      "saveError": "Could not save. Please try again."
     }
   },
   "dashboard": {
     "greeting": "Hello, {name}",
     "subtitle": "Welcome to your dashboard",
+    "requestContact": "Request contact",
     "statsPlaceholder": {
       "title": "Your journey at a glance",
       "description": "Soon you will track everything from here."

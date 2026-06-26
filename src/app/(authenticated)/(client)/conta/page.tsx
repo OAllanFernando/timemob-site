@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 
 import { useAuth } from '@/hooks/use-auth';
 import { PlaceholderCard } from '@/components/layout/placeholder-card';
+import { ContactCtaButton } from '@/components/lead/contact-cta-button';
 
 export default function ClientHomePage() {
     const t = useTranslations('dashboard');
@@ -17,11 +18,14 @@ export default function ClientHomePage() {
 
     return (
         <div className="space-y-8">
-            <div className="space-y-1">
-                <h1 className="font-heading text-3xl font-medium tracking-tight">
-                    {t('greeting', { name: displayName })}
-                </h1>
-                <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
+            <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="space-y-1">
+                    <h1 className="font-heading text-3xl font-medium tracking-tight">
+                        {t('greeting', { name: displayName })}
+                    </h1>
+                    <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
+                </div>
+                <ContactCtaButton label={t('requestContact')} />
             </div>
 
             <PlaceholderCard

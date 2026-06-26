@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import type { Control, FieldPath } from 'react-hook-form';
+import type { Control, FieldPath, UseFormReturn } from 'react-hook-form';
 
 import {
     FormControl,
@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
+import { InterestLocationFields } from './interest-location-fields';
 import {
     BUSINESS_TYPES,
     PROPERTY_TYPES,
@@ -21,17 +22,20 @@ import {
 } from '@/lib/schemas/interest-profile';
 
 interface Props {
-    control: Control<InterestProfileInput>;
+    form: UseFormReturn<InterestProfileInput>;
 }
 
 type FieldName = FieldPath<InterestProfileInput>;
 
-export function InterestProfileFields({ control }: Props) {
+export function InterestProfileFields({ form }: Props) {
     const t = useTranslations('auth.interestProfile');
+    const control = form.control;
 
     return (
         <div className="space-y-4 rounded-md border border-border bg-muted/30 p-4">
             <p className="text-sm text-muted-foreground">{t('intro')}</p>
+
+            <InterestLocationFields form={form} />
 
             <FormField
                 control={control}

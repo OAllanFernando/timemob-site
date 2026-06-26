@@ -32,6 +32,7 @@
       "title": "Criar sua conta",
       "subtitle": "Em poucos minutos você acompanha imóveis, visitas e propostas pelo seu painel",
       "fillInterestProfileToggle": "Quero preencher meu perfil de interesse agora",
+      "acceptContactToggle": "Autorizo a imobiliária a entrar em contato comigo sobre imóveis",
       "fields": {
         "name": "Nome completo",
         "namePlaceholder": "Como você se chama",
@@ -48,6 +49,14 @@
         "acceptTerms": "Aceito os",
         "termsLink": "Termos de Uso e Política de Privacidade",
         "optional": "opcional"
+      },
+      "address": {
+        "title": "Área de interesse",
+        "hint": "Marque a área onde você procura imóvel — usamos a localização para mostrar opções perto de você.",
+        "streetName": "Rua / logradouro",
+        "number": "Número",
+        "postalCode": "CEP",
+        "complement": "Complemento"
       },
       "submit": "Criar conta",
       "submitting": "Criando conta...",
@@ -94,6 +103,19 @@
         "SALE": "Comprar",
         "RENT": "Alugar",
         "DAILY_RENT": "Temporada"
+      },
+      "location": {
+        "title": "Região de interesse",
+        "hint": "Busque um endereço ou toque no mapa — cidade, estado e bairro são preenchidos automaticamente.",
+        "state": "Estado",
+        "city": "Cidade",
+        "neighborhood": "Bairro",
+        "stateEmpty": "Selecione no mapa",
+        "cityEmpty": "Selecione no mapa",
+        "neighborhoodEmpty": "Selecione no mapa",
+        "neighborhoodMissing": "Bairro não detectado neste ponto. Use o mapa para escolher.",
+        "pickNeighborhood": "Selecionar bairro no mapa",
+        "changeNeighborhood": "Trocar bairro"
       }
     },
     "forgotPassword": {
@@ -144,6 +166,10 @@
       "KNOW_MORE": "Receber outras opções parecidas",
       "GENERIC_CONTACT": "Falar com um corretor agora"
     },
+    "location": {
+      "title": "Onde você procura?",
+      "hint": "Permita o acesso à sua localização ou toque no mapa para marcar a região de interesse."
+    },
     "toggles": {
       "showDetails": "Mais detalhes do contato",
       "createAccount": "Também quero criar uma conta completa para acompanhar tudo",
@@ -174,6 +200,20 @@
     "body": "Este é um conteúdo placeholder. Os termos definitivos serão publicados em breve por cada imobiliária parceira.",
     "placeholder": "Em caso de dúvidas, fale com o atendimento."
   },
+  "maps": {
+    "neighborhoodPicker": {
+      "title": "Selecionar bairro no mapa",
+      "description": "Toque ou arraste o marcador até o ponto desejado — detectamos o bairro pela localização.",
+      "helper": "Toque no mapa ou arraste o marcador para detectar o bairro.",
+      "searching": "Buscando bairro...",
+      "nothingHere": "Nenhum resultado neste ponto. Tente outro próximo.",
+      "noNeighborhoodHere": "Este ponto não retornou bairro. Tente um ponto próximo.",
+      "geocodeFailed": "Não foi possível consultar o Google. Tente de novo.",
+      "cityMismatch": "Atenção: o bairro encontrado parece estar fora de {city}.",
+      "confirm": "Usar este bairro",
+      "cancel": "Cancelar"
+    }
+  },
   "nav": {
     "dashboard": "Painel",
     "publicAbout": "Sobre nós",
@@ -192,7 +232,7 @@
       "home": "Minha conta",
       "visits": "Minhas visitas",
       "favorites": "Favoritos",
-      "profile": "Perfil"
+      "profile": "Meu perfil"
     }
   },
   "sidebar": {
@@ -215,11 +255,81 @@
       "title": "Catálogo em breve",
       "body": "Estamos preparando uma seleção curada de imóveis para você.",
       "back": "Voltar para o início"
+    },
+    "leads": {
+      "description": {
+        "manager": "Todos os leads da sua imobiliária.",
+        "agent": "Os leads atribuídos a você."
+      },
+      "filter": {
+        "stage": "Filtrar por estágio",
+        "all": "Todos os estágios"
+      },
+      "stages": {
+        "NEW": "Novo",
+        "ASSIGNED": "Atribuído",
+        "ACCEPTED": "Aceito",
+        "IN_POOL": "Na fila",
+        "CONTACTED": "Contatado",
+        "QUALIFIED": "Qualificado",
+        "CONVERTED": "Convertido",
+        "DISCARDED": "Descartado"
+      },
+      "empty": {
+        "message": "Nenhum lead encontrado."
+      },
+      "error": {
+        "fetch": "Falha ao carregar os leads. Tente novamente."
+      },
+      "pagination": {
+        "info": "Página {current} de {total} · {count} leads",
+        "prev": "Anterior",
+        "next": "Próxima"
+      },
+      "unnamed": "Sem nome",
+      "lastContact": "Último contato",
+      "noContact": "Sem contato registrado",
+      "responsible": "Responsável"
+    },
+    "profile": {
+      "subtitle": "Seus perfis de interesse salvos nesta imobiliária.",
+      "error": {
+        "fetch": "Falha ao carregar seu perfil. Tente novamente."
+      },
+      "empty": {
+        "message": "Você ainda não cadastrou um perfil de interesse."
+      },
+      "card": {
+        "untitled": "Perfil de interesse"
+      },
+      "summary": {
+        "bedrooms": "{count} dorm.",
+        "upTo": "até {value}"
+      },
+      "edit": "Editar",
+      "location": {
+        "title": "Localização de interesse",
+        "hint": "Marque no mapa a região onde você procura imóvel — preenchemos estado, cidade e bairro automaticamente para refinar a busca."
+      },
+      "consent": {
+        "authorize": "Autorizo a imobiliária a entrar em contato comigo.",
+        "authorizedAt": "Contato autorizado em {date}."
+      },
+      "dialog": {
+        "title": "Editar perfil de interesse",
+        "description": "Atualize suas preferências de imóvel."
+      },
+      "save": "Salvar",
+      "saving": "Salvando...",
+      "cancel": "Cancelar",
+      "saved": "Perfil atualizado.",
+      "saveError": "Não foi possível salvar. Tente novamente."
     }
   },
   "dashboard": {
     "greeting": "Olá, {name}",
     "subtitle": "Bem-vindo ao seu painel",
+    "requestContact": "Solicitar contato",
     "statsPlaceholder": {
       "title": "Resumo da sua jornada",
       "description": "Em breve você acompanhará tudo por aqui."

@@ -22,6 +22,8 @@ export const leadSchema = z
             message: 'Selecione o motivo do contato',
         }),
         interestTags: z.array(z.string()).optional(),
+        interestLatitude: z.number().nullable().optional(),
+        interestLongitude: z.number().nullable().optional(),
         acceptTerms: z.literal(true, {
             message: 'É necessário aceitar os termos para continuar',
         }),

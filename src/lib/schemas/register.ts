@@ -6,11 +6,18 @@ export const registerSchema = z
         email: z.string().email('Email inválido'),
         phoneNumber: z.string().min(8, 'Informe um telefone válido'),
         naturalPersonDocument: z.string().optional(),
+        postalCode: z.string().optional(),
+        streetName: z.string().optional(),
+        number: z.string().optional(),
+        complement: z.string().optional(),
+        latitude: z.number().nullable().optional(),
+        longitude: z.number().nullable().optional(),
         password: z.string().min(8, 'A senha deve ter pelo menos 8 caracteres'),
         confirmPassword: z.string().min(1, 'Confirme a senha'),
         acceptTerms: z.literal(true, {
             message: 'É necessário aceitar os termos para continuar',
         }),
+        acceptContact: z.boolean().optional(),
         fillInterestProfile: z.boolean().optional(),
     })
     .refine((data) => data.password === data.confirmPassword, {

@@ -88,6 +88,9 @@ export interface ICustomer {
     streetName?: string | null;
     number?: string | null;
     complement?: string | null;
+    /** Geocoded coordinates of the customer's address (from the map picker). */
+    latitude?: number | null;
+    longitude?: number | null;
     naturalPersonDocument?: string | null;
     entityDocument?: string | null;
     personType: PersonType;
@@ -160,6 +163,9 @@ export interface IPublicLeadRequest {
     message?: string;
     source: LeadSource;
     interestTags?: string[];
+    /** Location of interest the visitor marked on the map (a point). */
+    latitude?: number;
+    longitude?: number;
     /** Optional context: id of the property the visitor was viewing. */
     propertyOfInterest?: IPropertyRef;
     /** Optional: id of the Customer the lead belongs to (only set when known). */
@@ -189,6 +195,18 @@ export interface IPublicLeadResponse {
 }
 
 /**
+ * Lead as returned by the operational-account list endpoint `GET /api/leads`
+ * (Manager/Agent area). Same shape as {@link IPublicLeadResponse} plus the optional
+ * geocoded point of interest. The backend enforces visibility by role — a Manager
+ * gets every lead of the tenant, an Agent only the ones assigned to them — so the
+ * front just renders whatever it receives.
+ */
+export interface ILeadDTO extends IPublicLeadResponse {
+    latitude?: number;
+    longitude?: number;
+}
+
+/**
  * Self-register flow: visitor creates a real login.
  * Backend creates User + Customer + Membership(leadStatus=NEW) in one
  * transactional unit. The front then calls /api/site/authenticate to obtain
@@ -212,11 +230,22 @@ export interface ICustomerRegistrationRequest {
         personType: PersonType;
         naturalPersonDocument?: string;
         entityDocument?: string;
+        postalCode?: string;
+        streetName?: string;
+        number?: string;
+        complement?: string;
+        /** Geocoded point of the address picked on the map. */
+        latitude?: number;
+        longitude?: number;
     };
     /** Required true. Backend timestamps termsAndConditionsAccept on the Membership. */
     acceptTerms: true;
-    /** Always true from the site — the visitor is signing up against THIS tenant. */
-    createMembership: true;
+    /**
+     * Consent to be contacted by the tenant. When true, the backend also creates the
+     * CustomerMembership (lead, leadStatus=NEW). When false/omitted, only the account
+     * is created and `memberships` comes back empty. Replaces the old `createMembership`.
+     */
+    acceptContact?: boolean;
 }
 
 export interface ICustomerRegistrationResponse {
@@ -320,7 +349,51 @@ export interface ICustomerSelfUpdateRequest {
  * Field names mirror the backend's InterestProfileDTO verbatim (singular
  * `bedroom`/`suite`/`bathroom`, `carVacancy`, `utilArea`, `propertyBusinessType`).
  */
+/**
+ * Every field is optional — it's a search profile. Fields are `?: T | null` to mirror the
+ * backend's nullable columns and to accept the form's output verbatim (the edit form yields
+ * `null` for cleared fields and round-trips the `null`s the backend returns).
+ */
 export interface IInterestProfileRequest {
+    title?: string | null;
+    propertyType?: PropertyType | null;
+    propertyBusinessType?: PropertyBusinessType | null;
+    minAmount?: number | null;
+    maxAmount?: number | null;
+    bedroom?: number | null;
+    suite?: number | null;
+    bathroom?: number | null;
+    carVacancy?: number | null;
+    totalArea?: number | null;
+    utilArea?: number | null;
+    /** Free-text fallback for extra notes. */
+    notes?: string | null;
+    /** Point of interest on the map (signed) — guides the broker, not the person's address. */
+    latitude?: number | null;
+    longitude?: number | null;
+    /**
+     * Geography captured from the Google map by NAME (never typed). The service nests these into
+     * `neighborhood → city → state → country` and the backend find-or-creates the records.
+     */
+    neighborhoodName?: string | null;
+    cityName?: string | null;
+    stateName?: string | null;
+    uf?: string | null;
+    countryName?: string | null;
+    countryCode?: string | null;
+}
+
+export interface IInterestProfileResponse {
+    id: number;
+}
+
+/**
+ * Full InterestProfile as returned by `GET /api/site/interest-profiles` (the customer's own
+ * saved profiles in the current tenant) and `PUT /api/site/interest-profiles/{id}`. Geography
+ * comes back as `{ id, name }` projections.
+ */
+export interface IInterestProfileDTO {
+    id: number;
     title?: string;
     propertyType?: PropertyType;
     propertyBusinessType?: PropertyBusinessType;
@@ -332,10 +405,10 @@ export interface IInterestProfileRequest {
     carVacancy?: number;
     totalArea?: number;
     utilArea?: number;
-    /** Free-text fallback when an autocomplete on Neighborhood is not yet available. */
     notes?: string;
-}
-
-export interface IInterestProfileResponse {
-    id: number;
+    latitude?: number;
+    longitude?: number;
+    state?: { id: number; name?: string; uf?: string };
+    city?: { id: number; name?: string };
+    neighborhood?: { id: number; name?: string };
 }

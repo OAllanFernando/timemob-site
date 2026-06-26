@@ -25,14 +25,25 @@ export const BUSINESS_TYPES = [
     'DAILY_RENT',
 ] as const satisfies readonly PropertyBusinessType[];
 
+// It's a search form: every field is optional. Use `.nullish()` (accepts both `null` and
+// `undefined`) so the values the backend returns as JSON `null` round-trip through edit without
+// tripping validation — aligning the site's optionality with the backend's nullable columns.
 const optionalNonNegativeNumber = z
     .number()
     .nonnegative('Informe um número válido')
-    .optional();
+    .nullish();
 
 export const interestProfileSchema = z.object({
-    propertyType: z.enum(PROPERTY_TYPES).optional(),
-    propertyBusinessType: z.enum(BUSINESS_TYPES).optional(),
+    propertyType: z.enum(PROPERTY_TYPES).nullish(),
+    propertyBusinessType: z.enum(BUSINESS_TYPES).nullish(),
+    // Geography is captured from the Google map (never typed) and persisted by NAME — the backend
+    // find-or-creates state/city/neighborhood. These are filled by InterestLocationFields.
+    neighborhoodName: z.string().nullish(),
+    cityName: z.string().nullish(),
+    stateName: z.string().nullish(),
+    uf: z.string().nullish(),
+    countryName: z.string().nullish(),
+    countryCode: z.string().nullish(),
     minAmount: optionalNonNegativeNumber,
     maxAmount: optionalNonNegativeNumber,
     bedroom: optionalNonNegativeNumber,
@@ -41,7 +52,10 @@ export const interestProfileSchema = z.object({
     carVacancy: optionalNonNegativeNumber,
     totalArea: optionalNonNegativeNumber,
     utilArea: optionalNonNegativeNumber,
-    notes: z.string().optional(),
+    notes: z.string().nullish(),
+    /** Point of interest on the map (signed — Brazil is negative lat/long). Guides the broker. */
+    latitude: z.number().nullish(),
+    longitude: z.number().nullish(),
 });
 
 export type InterestProfileInput = z.infer<typeof interestProfileSchema>;

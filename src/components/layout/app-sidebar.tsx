@@ -41,6 +41,7 @@ type NavItem = {
     href: string;
     icon: LucideIcon;
     key: string;
+    children?: NavItem[];
 };
 
 const ADMIN_ITEMS: NavItem[] = [
@@ -57,10 +58,14 @@ const OWNER_ITEMS: NavItem[] = [
 ];
 
 const CLIENT_ITEMS: NavItem[] = [
-    { href: '/conta', icon: LayoutDashboard, key: 'client.home' },
+    {
+        href: '/conta',
+        icon: LayoutDashboard,
+        key: 'client.home',
+        children: [{ href: '/conta/perfil', icon: User, key: 'client.profile' }],
+    },
     { href: '/conta/visitas', icon: CalendarCheck, key: 'client.visits' },
     { href: '/conta/favoritos', icon: Heart, key: 'client.favorites' },
-    { href: '/conta/perfil', icon: User, key: 'client.profile' },
 ];
 
 const ITEMS_BY_VARIANT: Record<AppSidebarVariant, NavItem[]> = {
@@ -107,7 +112,7 @@ export function AppSidebar({ variant }: AppSidebarProps) {
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu className="gap-1">
-                            {items.map(({ href, icon: Icon, key }) => {
+                            {items.map(({ href, icon: Icon, key, children }) => {
                                 const isActive =
                                     pathname === href || pathname.startsWith(`${href}/`);
                                 const label = tNav(key);
@@ -125,6 +130,34 @@ export function AppSidebar({ variant }: AppSidebarProps) {
                                                 <span>{label}</span>
                                             </Link>
                                         </SidebarMenuButton>
+
+                                        {children && children.length > 0 && (
+                                            <ul className="ml-5 mt-1 flex flex-col gap-1 border-l border-sidebar-border pl-2 group-data-[collapsible=icon]:hidden">
+                                                {children.map((child) => {
+                                                    const childActive =
+                                                        pathname === child.href ||
+                                                        pathname.startsWith(`${child.href}/`);
+                                                    const childLabel = tNav(child.key);
+                                                    const ChildIcon = child.icon;
+                                                    return (
+                                                        <SidebarMenuItem key={`${child.href}-${child.key}`}>
+                                                            <SidebarMenuButton
+                                                                asChild
+                                                                isActive={childActive}
+                                                                size="sm"
+                                                                tooltip={childLabel}
+                                                                className={ACTIVE_INDICATOR}
+                                                            >
+                                                                <Link href={child.href}>
+                                                                    <ChildIcon className="size-4" />
+                                                                    <span>{childLabel}</span>
+                                                                </Link>
+                                                            </SidebarMenuButton>
+                                                        </SidebarMenuItem>
+                                                    );
+                                                })}
+                                            </ul>
+                                        )}
                                     </SidebarMenuItem>
                                 );
                             })}

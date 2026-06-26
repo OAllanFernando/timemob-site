@@ -11,6 +11,7 @@ import { ChevronDown } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { authService } from '@/services/auth-service';
 import { customerService } from '@/services/customer-service';
+import { toRegistrationRequest } from '@/lib/transformers/registration';
 import { leadSchema, type LeadFormSource, type LeadInput } from '@/lib/schemas/lead';
 import {
     interestProfileSchema,
@@ -36,8 +37,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { TOKEN_STORAGE_KEY } from '@/lib/axios';
+import { AddressPicker } from '@/components/maps/address-picker';
 import { DomainError } from '@/types/domain-response';
-import type { ICustomerRegistrationRequest, IPublicLeadRequest } from '@/types/customer';
+import type { IPublicLeadRequest } from '@/types/customer';
+import type { ResolvedAddress } from '@/lib/maps/google-maps';
 
 import { InterestProfileFields } from '@/app/(public)/entrar/components/interest-profile-fields';
 
@@ -50,20 +53,15 @@ export interface LeadCaptureFormProps {
     onSuccess?: () => void;
 }
 
-function toRegistrationRequest(values: LeadInput): ICustomerRegistrationRequest {
-    return {
-        login: values.email,
+function leadToRegistrationRequest(values: LeadInput) {
+    return toRegistrationRequest({
+        name: values.name,
         email: values.email,
         password: values.password ?? '',
-        langKey: 'pt-br',
-        customer: {
-            name: values.name,
-            phoneNumber: values.phone,
-            personType: 'NATURAL_PERSON',
-        },
-        acceptTerms: true,
-        createMembership: true,
-    };
+        phoneNumber: values.phone,
+        // Filling the lead form is an explicit request to be contacted.
+        acceptContact: true,
+    });
 }
 
 function toLeadRequest(values: LeadInput, propertyId?: number): IPublicLeadRequest {
@@ -74,6 +72,8 @@ function toLeadRequest(values: LeadInput, propertyId?: number): IPublicLeadReque
         message: values.message?.trim() ? values.message : undefined,
         source: values.source,
         interestTags: values.interestTags?.length ? values.interestTags : undefined,
+        latitude: values.interestLatitude ?? undefined,
+        longitude: values.interestLongitude ?? undefined,
         propertyOfInterest: propertyId ? { id: propertyId } : undefined,
     };
 }
@@ -95,6 +95,8 @@ export function LeadCaptureForm({
             message: '',
             source: defaultSource,
             interestTags: [],
+            interestLatitude: null,
+            interestLongitude: null,
             acceptTerms: false as unknown as true,
             createAccount: false,
             password: '',
@@ -108,13 +110,20 @@ export function LeadCaptureForm({
         defaultValues: {
             propertyType: undefined,
             propertyBusinessType: undefined,
-            notes: '',
+            notes: undefined,
         },
     });
 
     const createAccount = form.watch('createAccount');
     const fillInterestProfile = form.watch('fillInterestProfile');
+    const interestLat = form.watch('interestLatitude');
+    const interestLng = form.watch('interestLongitude');
     const [showDetails, setShowDetails] = useState(false);
+
+    function handleInterestLocation(addr: ResolvedAddress) {
+        form.setValue('interestLatitude', addr.latitude, { shouldDirty: true });
+        form.setValue('interestLongitude', addr.longitude, { shouldDirty: true });
+    }
     const [serverError, setServerError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
 
@@ -123,7 +132,7 @@ export function LeadCaptureForm({
         try {
             if (values.createAccount) {
                 try {
-                    await customerService.register(toRegistrationRequest(values));
+                    await customerService.register(leadToRegistrationRequest(values));
                 } catch (err) {
                     if (isEmailConflict(err)) {
                         toast.error(t('errors.emailExists'));
@@ -170,7 +179,8 @@ export function LeadCaptureForm({
                 if (profileValid) {
                     try {
                         await customerService.submitInterestProfile(profileForm.getValues());
-                    } catch {
+                    } catch (err) {
+                        console.error('[interest-profile] submit failed', err);
                         toast.error(t('errors.interestProfilePartial'));
                     }
                 }
@@ -323,6 +333,23 @@ export function LeadCaptureForm({
                     <div className="space-y-5">
                         <LeadSourceRadio control={form.control} />
                         <InterestTagsChecks control={form.control} />
+                        <div className="space-y-2 rounded-md border border-border bg-muted/30 p-4">
+                            <div>
+                                <p className="text-sm font-medium text-foreground">
+                                    {t('location.title')}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    {t('location.hint')}
+                                </p>
+                            </div>
+                            <AddressPicker
+                                value={{
+                                    latitude: interestLat ?? null,
+                                    longitude: interestLng ?? null,
+                                }}
+                                onChange={handleInterestLocation}
+                            />
+                        </div>
                     </div>
                 )}
 
@@ -416,7 +443,7 @@ export function LeadCaptureForm({
                 </Tooltip>
 
                 {createAccount && fillInterestProfile && (
-                    <InterestProfileFields control={profileForm.control} />
+                    <InterestProfileFields form={profileForm} />
                 )}
 
                 <FormField
