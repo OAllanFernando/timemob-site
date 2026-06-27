@@ -261,9 +261,13 @@
         "manager": "Todos os leads da sua imobiliária.",
         "agent": "Os leads atribuídos a você."
       },
-      "filter": {
-        "stage": "Filtrar por estágio",
-        "all": "Todos os estágios"
+      "tabs": {
+        "pending": "Pendentes",
+        "active": "Em atendimento",
+        "closed": "Fechados"
+      },
+      "pool": {
+        "title": "Disponíveis no pool"
       },
       "stages": {
         "NEW": "Novo",

@@ -81,12 +81,51 @@ class CustomerService {
     async listLeads(
         page = 0,
         size = 20,
-        stage?: LeadStage,
+        stages?: LeadStage[],
     ): Promise<DomainPagedResponse<ILeadDTO>> {
         try {
             const params: Record<string, unknown> = { page, size };
-            if (stage) params.stage = stage;
+            // Funnel tabs send a bucket of stages; the backend reads `stage` as a CSV list.
+            if (stages && stages.length > 0) params.stage = stages.join(',');
             return toPagedResponse(await api.get<ILeadDTO[]>('/leads', { params }));
+        } catch (err) {
+            throw toDomainError(err);
+        }
+    }
+
+    /** ASSIGNED → ACCEPTED: the assigned broker takes the lead. */
+    async receiveLead(id: number): Promise<DomainResponse<ILeadDTO>> {
+        try {
+            return toResponse(await api.post<ILeadDTO>(`/leads/${id}/receive`));
+        } catch (err) {
+            throw toDomainError(err);
+        }
+    }
+
+    /** IN_POOL → ACCEPTED: any broker claims a pooled lead. */
+    async claimLead(id: number): Promise<DomainResponse<ILeadDTO>> {
+        try {
+            return toResponse(await api.post<ILeadDTO>(`/leads/${id}/claim`));
+        } catch (err) {
+            throw toDomainError(err);
+        }
+    }
+
+    /** → CONVERTED: creates the Customer + membership from the lead. */
+    async convertLead(id: number): Promise<DomainResponse<ILeadDTO>> {
+        try {
+            return toResponse(await api.post<ILeadDTO>(`/leads/${id}/convert`));
+        } catch (err) {
+            throw toDomainError(err);
+        }
+    }
+
+    /** Generic funnel advance (CONTACTED / QUALIFIED / DISCARDED / ...). */
+    async advanceLeadStage(id: number, stage: LeadStage): Promise<DomainResponse<ILeadDTO>> {
+        try {
+            return toResponse(
+                await api.patch<ILeadDTO>(`/leads/${id}/status`, null, { params: { stage } }),
+            );
         } catch (err) {
             throw toDomainError(err);
         }

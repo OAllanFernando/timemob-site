@@ -220,6 +220,8 @@ export interface IPublicLeadResponse {
 export interface ILeadDTO extends IPublicLeadResponse {
     latitude?: number;
     longitude?: number;
+    /** Interest profiles of the lead's customer in this tenant (empty for anonymous leads). */
+    interestProfiles?: IInterestProfileDTO[];
 }
 
 /**
