@@ -289,7 +289,43 @@
       "unnamed": "Sem nome",
       "lastContact": "Último contato",
       "noContact": "Sem contato registrado",
-      "responsible": "Responsável"
+      "responsible": "Responsável",
+      "viewOnMap": "Ver no mapa",
+      "sources": {
+        "PROPERTY_TALK": "Falar sobre imóvel",
+        "KNOW_MORE": "Saber mais",
+        "GENERIC_CONTACT": "Contato",
+        "OTHER": "Outro"
+      },
+      "interestProfile": {
+        "title": "Perfil de interesse",
+        "untitled": "Perfil de interesse"
+      },
+      "actions": {
+        "receive": "Receber",
+        "claim": "Pegar",
+        "contact": "Contatar",
+        "qualify": "Qualificar",
+        "convert": "Converter",
+        "discard": "Descartar",
+        "success": "Lead atualizado.",
+        "error": "Não foi possível atualizar. Tente novamente."
+      },
+      "detail": {
+        "open": "Abrir",
+        "contact": "Contato",
+        "interest": "Perfil de interesse",
+        "message": "Mensagem",
+        "noMessage": "Sem mensagem.",
+        "mapTitle": "Imóveis na região",
+        "map": {
+          "untitled": "Imóvel"
+        },
+        "chat": {
+          "placeholder": "Escreva uma mensagem…",
+          "soon": "Em breve"
+        }
+      }
     },
     "profile": {
       "subtitle": "Seus perfis de interesse salvos nesta imobiliária.",

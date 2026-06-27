@@ -123,6 +123,22 @@ export interface IPropertyRef {
 }
 
 /**
+ * Lightweight property marker for the lead-detail map (`GET /api/site/properties/nearby`):
+ * coordinates + a price/type label, nothing heavy.
+ */
+export interface IPropertyMapMarker {
+    id: number;
+    title?: string;
+    latitude?: number;
+    longitude?: number;
+    amount?: number;
+    propertyType?: PropertyType;
+    propertyBusinessType?: PropertyBusinessType;
+    bedroom?: number;
+    bathroom?: number;
+}
+
+/**
  * Per-tenant link of a global Customer to one agency. Unique (customer, tenant).
  * Created at lead capture / self-register; updated as the lead moves through
  * the funnel. The site only ever sees the membership for its own tenant

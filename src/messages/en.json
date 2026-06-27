@@ -289,7 +289,43 @@
       "unnamed": "Unnamed",
       "lastContact": "Last contact",
       "noContact": "No contact yet",
-      "responsible": "Responsible"
+      "responsible": "Responsible",
+      "viewOnMap": "View on map",
+      "sources": {
+        "PROPERTY_TALK": "Property inquiry",
+        "KNOW_MORE": "Learn more",
+        "GENERIC_CONTACT": "Contact",
+        "OTHER": "Other"
+      },
+      "interestProfile": {
+        "title": "Interest profile",
+        "untitled": "Interest profile"
+      },
+      "actions": {
+        "receive": "Receive",
+        "claim": "Claim",
+        "contact": "Contact",
+        "qualify": "Qualify",
+        "convert": "Convert",
+        "discard": "Discard",
+        "success": "Lead updated.",
+        "error": "Could not update. Please try again."
+      },
+      "detail": {
+        "open": "Open",
+        "contact": "Contact",
+        "interest": "Interest profile",
+        "message": "Message",
+        "noMessage": "No message.",
+        "mapTitle": "Properties nearby",
+        "map": {
+          "untitled": "Property"
+        },
+        "chat": {
+          "placeholder": "Write a message…",
+          "soon": "Coming soon"
+        }
+      }
     },
     "profile": {
       "subtitle": "Your interest profiles saved at this agency.",

@@ -3,11 +3,24 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
-import { AlertCircle, ChevronLeft, ChevronRight, Mail, Phone } from 'lucide-react';
+import {
+    AlertCircle,
+    ChevronLeft,
+    ChevronRight,
+    Home,
+    Mail,
+    MapPin,
+    Maximize2,
+    Phone,
+    Tag,
+} from 'lucide-react';
 
 import { useAuth } from '@/hooks/use-auth';
 import { customerService } from '@/services/customer-service';
-import type { ILeadDTO, LeadStage } from '@/types/customer';
+import type { IInterestProfileDTO, ILeadDTO, LeadStage } from '@/types/customer';
+import { LeadStageBadge } from '@/components/lead/lead-stage-badge';
+import { LeadActions } from '@/components/lead/lead-actions';
+import { LeadDetailModal } from '@/components/lead/lead-detail-modal';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -39,8 +52,7 @@ export default function AdminLeadsPage() {
     const { role } = useAuth();
 
     const [page, setPage] = useState(0);
-    const [selectedStage, setSelectedStage] = useState<LeadStage | 'all'>('all');
-    const stage = selectedStage === 'all' ? undefined : selectedStage;
+    const [selected, setSelected] = useState<ILeadDTO | null>(null);
 
     const { data, isPending, isError } = useQuery({
         queryKey: ['leads', 'list', page, PAGE_SIZE, stage] as const,
@@ -91,8 +103,8 @@ export default function AdminLeadsPage() {
                 </Alert>
             ) : isPending ? (
                 <div className="grid gap-4">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                        <Skeleton key={i} className="h-32 w-full rounded-xl" />
+                    {mainLeads.map((lead) => (
+                        <LeadCard key={lead.id} lead={lead} onOpen={() => setSelected(lead)} />
                     ))}
                 </div>
             ) : leads.length === 0 ? (
@@ -104,8 +116,8 @@ export default function AdminLeadsPage() {
             ) : (
                 <>
                     <div className="grid gap-4">
-                        {leads.map((lead) => (
-                            <LeadCard key={lead.id} lead={lead} />
+                        {poolLeads.map((lead) => (
+                            <LeadCard key={lead.id} lead={lead} onOpen={() => setSelected(lead)} />
                         ))}
                     </div>
 
@@ -142,26 +154,44 @@ export default function AdminLeadsPage() {
                     )}
                 </>
             )}
+
+            <LeadDetailModal
+                lead={selected}
+                open={!!selected}
+                onOpenChange={(o) => {
+                    if (!o) setSelected(null);
+                }}
+            />
         </div>
     );
 }
 
-function LeadCard({ lead }: { lead: ILeadDTO }) {
+function LeadCard({ lead, onOpen }: { lead: ILeadDTO; onOpen: () => void }) {
     const t = useTranslations('pages.leads');
 
     return (
         <Card>
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                        <CardTitle className="font-heading text-lg">
+                    <button
+                        type="button"
+                        onClick={onOpen}
+                        className="min-w-0 text-left"
+                    >
+                        <CardTitle className="font-heading text-lg hover:underline">
                             {lead.name || t('unnamed')}
                         </CardTitle>
-                        <p className="mt-1 text-xs text-muted-foreground">#{lead.id}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            #{lead.id} · {t(`sources.${lead.source}`)}
+                        </p>
+                    </button>
+                    <div className="flex shrink-0 items-center gap-2">
+                        <LeadStageBadge stage={lead.stage} />
+                        <Button variant="ghost" size="sm" onClick={onOpen}>
+                            <Maximize2 className="h-4 w-4" />
+                            {t('detail.open')}
+                        </Button>
                     </div>
-                    <span className="inline-flex shrink-0 items-center rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
-                        {t(`stages.${lead.stage}`)}
-                    </span>
                 </div>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
