@@ -772,3 +772,6 @@ dto all with mapstruct
 service all with serviceImpl
 
 ```
+
+
+oi
