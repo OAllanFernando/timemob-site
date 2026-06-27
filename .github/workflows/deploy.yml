@@ -1,20 +1,18 @@
 name: Deploy Site
 
-# Branch convention: <stage>/<client>  (e.g. alpha/alvorada-imoveis, prod/alvorada-imoveis).
-#   - APP_NAME = the branch with "/" → "-" (alpha-alvorada-imoveis). It names the image, the
-#     container and the infra folder apps/sites/<APP_NAME>/ — so dev and prod NEVER collide,
-#     even on the same server.
-#   - Environment = the full branch (alpha/alvorada-imoveis) → that stage+client's secrets.
-# Dev branches (fix/..., feat/...) and main do NOT deploy.
+# One deployment per client. The branch name = client slug = APP_NAME = GitHub Environment name =
+# infra folder apps/sites/<slug>/ = image name = subdomain. Per-client config lives in the
+# Environment named exactly like the branch (alvorada-imoveis). `main` and dev branches
+# (fix/..., feat/... — anything with a "/") do NOT deploy.
 #
-# Image → GHCR (ghcr.io/<owner>/<client>), tags :latest + :<sha>. The EC2 runs the exact sha via
+# Image → GHCR (ghcr.io/<owner>/<slug>), tags :latest + :<sha>. The EC2 runs the exact sha via
 # IMAGE_TAG. Rollback: run this workflow from the branch with rollback_tag = an older sha.
 
 on:
   push:
     branches:
-      - "alpha/**"
-      - "prod/**"
+      - "*"
+      - "!main"
   workflow_dispatch:
     inputs:
       rollback_tag:
@@ -29,20 +27,19 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    # Environment named after the full branch (e.g. alpha/alvorada-imoveis) → this stage+client's
-    # secrets/variables (NEXT_PUBLIC_TENANT_*, NEXT_PUBLIC_APP_NAME, and optionally EC2_* per stage).
+    # The Environment named after the branch supplies this client's secrets/variables.
     environment: ${{ github.ref_name }}
+
+    env:
+      APP_NAME: ${{ github.ref_name }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Resolve names + deploy tag
+      - name: Resolve image ref + deploy tag
         run: |
-          REF="${{ github.ref_name }}"               # e.g. alpha/alvorada-imoveis
-          APP_NAME=$(echo "$REF" | tr '/' '-')       # alpha-alvorada-imoveis (folder/image/container)
           OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          echo "APP_NAME=$APP_NAME" >> "$GITHUB_ENV"
           echo "IMAGE=ghcr.io/$OWNER_LC/$APP_NAME" >> "$GITHUB_ENV"
           DEPLOY_TAG="${{ github.event.inputs.rollback_tag }}"
           [ -n "$DEPLOY_TAG" ] || DEPLOY_TAG="${{ github.sha }}"
