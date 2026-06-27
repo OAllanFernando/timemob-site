@@ -1,10 +1,11 @@
 name: Deploy Site
 
 # Branch convention: <stage>/<client>  (e.g. alpha/alvorada-imoveis, prod/alvorada-imoveis).
-#   - stage  = before the "/"  → selects the GitHub Environment (config + EC2 target).
-#   - client = after the "/"   → APP_NAME = image name = infra folder apps/sites/<client>/.
-# Per-(stage,client) config lives in the Environment named exactly like the branch
-# (alpha/alvorada-imoveis). Dev branches (fix/..., feat/...) and main do NOT deploy.
+#   - APP_NAME = the branch with "/" → "-" (alpha-alvorada-imoveis). It names the image, the
+#     container and the infra folder apps/sites/<APP_NAME>/ — so dev and prod NEVER collide,
+#     even on the same server.
+#   - Environment = the full branch (alpha/alvorada-imoveis) → that stage+client's secrets.
+# Dev branches (fix/..., feat/...) and main do NOT deploy.
 #
 # Image → GHCR (ghcr.io/<owner>/<client>), tags :latest + :<sha>. The EC2 runs the exact sha via
 # IMAGE_TAG. Rollback: run this workflow from the branch with rollback_tag = an older sha.
@@ -38,11 +39,11 @@ jobs:
 
       - name: Resolve names + deploy tag
         run: |
-          REF="${{ github.ref_name }}"          # e.g. alpha/alvorada-imoveis
-          CLIENT="${REF##*/}"                    # alvorada-imoveis
+          REF="${{ github.ref_name }}"               # e.g. alpha/alvorada-imoveis
+          APP_NAME=$(echo "$REF" | tr '/' '-')       # alpha-alvorada-imoveis (folder/image/container)
           OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          echo "APP_NAME=$CLIENT" >> "$GITHUB_ENV"
-          echo "IMAGE=ghcr.io/$OWNER_LC/$CLIENT" >> "$GITHUB_ENV"
+          echo "APP_NAME=$APP_NAME" >> "$GITHUB_ENV"
+          echo "IMAGE=ghcr.io/$OWNER_LC/$APP_NAME" >> "$GITHUB_ENV"
           DEPLOY_TAG="${{ github.event.inputs.rollback_tag }}"
           [ -n "$DEPLOY_TAG" ] || DEPLOY_TAG="${{ github.sha }}"
           echo "DEPLOY_TAG=$DEPLOY_TAG" >> "$GITHUB_ENV"
