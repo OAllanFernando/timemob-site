@@ -3,144 +3,172 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
-import { AlertCircle, ChevronLeft, ChevronRight, Mail, Phone } from 'lucide-react';
+import {
+    AlertCircle,
+    ChevronLeft,
+    ChevronRight,
+    Home,
+    Mail,
+    MapPin,
+    Phone,
+    Tag,
+} from 'lucide-react';
 
 import { useAuth } from '@/hooks/use-auth';
 import { customerService } from '@/services/customer-service';
-import type { ILeadDTO, LeadStage } from '@/types/customer';
+import type { IInterestProfileDTO, ILeadDTO, LeadStage } from '@/types/customer';
+import { LeadStageBadge } from '@/components/lead/lead-stage-badge';
+import { LeadActions } from '@/components/lead/lead-actions';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const PAGE_SIZE = 20;
 
-const LEAD_STAGES: LeadStage[] = [
-    'NEW',
-    'ASSIGNED',
-    'ACCEPTED',
-    'IN_POOL',
-    'CONTACTED',
-    'QUALIFIED',
-    'CONVERTED',
-    'DISCARDED',
-];
+type LeadBucket = 'pending' | 'active' | 'closed';
+
+/** Funnel buckets → the stages each tab loads. The active tab is the only one that queries. */
+const BUCKET_STAGES: Record<LeadBucket, LeadStage[]> = {
+    pending: ['NEW', 'ASSIGNED', 'IN_POOL'],
+    active: ['ACCEPTED', 'CONTACTED', 'QUALIFIED'],
+    closed: ['CONVERTED', 'DISCARDED'],
+};
+
+const BUCKETS: LeadBucket[] = ['pending', 'active', 'closed'];
 
 export default function AdminLeadsPage() {
     const tNav = useTranslations('nav.admin');
     const t = useTranslations('pages.leads');
     const { role } = useAuth();
+    const [tab, setTab] = useState<LeadBucket>('pending');
 
+    return (
+        <div className="space-y-6">
+            <div>
+                <h1 className="font-heading text-3xl font-medium tracking-tight">{tNav('leads')}</h1>
+                <p className="mt-1 text-sm text-muted-foreground">
+                    {role === 'AGENT' ? t('description.agent') : t('description.manager')}
+                </p>
+            </div>
+
+            <Tabs value={tab} onValueChange={(v) => setTab(v as LeadBucket)}>
+                <TabsList>
+                    {BUCKETS.map((b) => (
+                        <TabsTrigger key={b} value={b}>
+                            {t(`tabs.${b}`)}
+                        </TabsTrigger>
+                    ))}
+                </TabsList>
+                {BUCKETS.map((b) => (
+                    <TabsContent key={b} value={b} className="mt-4">
+                        {/* Radix unmounts inactive tabs, so only the active bucket queries — keeps it light. */}
+                        <LeadsBucket bucket={b} />
+                    </TabsContent>
+                ))}
+            </Tabs>
+        </div>
+    );
+}
+
+function LeadsBucket({ bucket }: { bucket: LeadBucket }) {
+    const t = useTranslations('pages.leads');
     const [page, setPage] = useState(0);
-    const [selectedStage, setSelectedStage] = useState<LeadStage | 'all'>('all');
-    const stage = selectedStage === 'all' ? undefined : selectedStage;
 
     const { data, isPending, isError } = useQuery({
-        queryKey: ['leads', 'list', page, PAGE_SIZE, stage] as const,
-        queryFn: () => customerService.listLeads(page, PAGE_SIZE, stage),
+        queryKey: ['leads', 'list', bucket, page] as const,
+        queryFn: () => customerService.listLeads(page, PAGE_SIZE, BUCKET_STAGES[bucket]),
     });
 
     const leads = data?.data ?? [];
     const pagination = data?.pagination;
     const totalPages = pagination?.totalPages ?? 0;
 
+    if (isError) {
+        return (
+            <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{t('error.fetch')}</AlertDescription>
+            </Alert>
+        );
+    }
+    if (isPending) {
+        return (
+            <div className="grid gap-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton key={i} className="h-32 w-full rounded-xl" />
+                ))}
+            </div>
+        );
+    }
+    if (leads.length === 0) {
+        return (
+            <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                    <p className="text-sm text-muted-foreground">{t('empty.message')}</p>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    // In "Pendentes", pool leads (claimable by anyone) get their own section.
+    const poolLeads = bucket === 'pending' ? leads.filter((l) => l.stage === 'IN_POOL') : [];
+    const mainLeads = bucket === 'pending' ? leads.filter((l) => l.stage !== 'IN_POOL') : leads;
+
     return (
         <div className="space-y-6">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-                <div>
-                    <h1 className="font-heading text-3xl font-medium tracking-tight">
-                        {tNav('leads')}
-                    </h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                        {role === 'AGENT' ? t('description.agent') : t('description.manager')}
-                    </p>
-                </div>
-
-                <Select
-                    value={selectedStage}
-                    onValueChange={(value) => {
-                        setSelectedStage(value as LeadStage | 'all');
-                        setPage(0);
-                    }}
-                >
-                    <SelectTrigger className="w-[200px]">
-                        <SelectValue placeholder={t('filter.stage')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">{t('filter.all')}</SelectItem>
-                        {LEAD_STAGES.map((s) => (
-                            <SelectItem key={s} value={s}>
-                                {t(`stages.${s}`)}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
-
-            {isError ? (
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{t('error.fetch')}</AlertDescription>
-                </Alert>
-            ) : isPending ? (
+            {mainLeads.length > 0 && (
                 <div className="grid gap-4">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                        <Skeleton key={i} className="h-32 w-full rounded-xl" />
+                    {mainLeads.map((lead) => (
+                        <LeadCard key={lead.id} lead={lead} />
                     ))}
                 </div>
-            ) : leads.length === 0 ? (
-                <Card>
-                    <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                        <p className="text-sm text-muted-foreground">{t('empty.message')}</p>
-                    </CardContent>
-                </Card>
-            ) : (
-                <>
+            )}
+
+            {poolLeads.length > 0 && (
+                <div className="space-y-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                        {t('pool.title')}
+                    </p>
                     <div className="grid gap-4">
-                        {leads.map((lead) => (
+                        {poolLeads.map((lead) => (
                             <LeadCard key={lead.id} lead={lead} />
                         ))}
                     </div>
+                </div>
+            )}
 
-                    {totalPages > 1 && (
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                            <p className="text-sm text-muted-foreground">
-                                {t('pagination.info', {
-                                    current: page + 1,
-                                    total: totalPages,
-                                    count: pagination?.totalCount ?? leads.length,
-                                })}
-                            </p>
-                            <div className="flex gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setPage((p) => Math.max(0, p - 1))}
-                                    disabled={page === 0}
-                                >
-                                    <ChevronLeft className="h-4 w-4" />
-                                    {t('pagination.prev')}
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                                    disabled={page >= totalPages - 1}
-                                >
-                                    {t('pagination.next')}
-                                    <ChevronRight className="h-4 w-4" />
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-                </>
+            {totalPages > 1 && (
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm text-muted-foreground">
+                        {t('pagination.info', {
+                            current: page + 1,
+                            total: totalPages,
+                            count: pagination?.totalCount ?? leads.length,
+                        })}
+                    </p>
+                    <div className="flex gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPage((p) => Math.max(0, p - 1))}
+                            disabled={page === 0}
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                            {t('pagination.prev')}
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                            disabled={page >= totalPages - 1}
+                        >
+                            {t('pagination.next')}
+                            <ChevronRight className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </div>
             )}
         </div>
     );
@@ -148,6 +176,7 @@ export default function AdminLeadsPage() {
 
 function LeadCard({ lead }: { lead: ILeadDTO }) {
     const t = useTranslations('pages.leads');
+    const profiles = lead.interestProfiles ?? [];
 
     return (
         <Card>
@@ -157,11 +186,11 @@ function LeadCard({ lead }: { lead: ILeadDTO }) {
                         <CardTitle className="font-heading text-lg">
                             {lead.name || t('unnamed')}
                         </CardTitle>
-                        <p className="mt-1 text-xs text-muted-foreground">#{lead.id}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            #{lead.id} · {t(`sources.${lead.source}`)}
+                        </p>
                     </div>
-                    <span className="inline-flex shrink-0 items-center rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
-                        {t(`stages.${lead.stage}`)}
-                    </span>
+                    <LeadStageBadge stage={lead.stage} />
                 </div>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
@@ -184,24 +213,55 @@ function LeadCard({ lead }: { lead: ILeadDTO }) {
                             <span className="truncate">{lead.phone}</span>
                         </a>
                     )}
+                    {lead.propertyOfInterest?.title && (
+                        <span className="flex items-center gap-2 text-foreground/80">
+                            <Home className="h-4 w-4 shrink-0 text-muted-foreground" />
+                            <span className="truncate">{lead.propertyOfInterest.title}</span>
+                        </span>
+                    )}
+                    {lead.latitude != null && lead.longitude != null && (
+                        <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${lead.latitude},${lead.longitude}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-foreground/80 hover:underline"
+                        >
+                            <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
+                            <span>{t('viewOnMap')}</span>
+                        </a>
+                    )}
                 </div>
-
-                {lead.message && (
-                    <div className="rounded-md bg-muted/60 p-3">
-                        <p className="line-clamp-3 text-xs text-muted-foreground">{lead.message}</p>
-                    </div>
-                )}
 
                 {lead.interestTags && lead.interestTags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                         {lead.interestTags.map((tag) => (
                             <span
                                 key={tag}
-                                className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-xs text-accent-foreground"
+                                className="inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-xs text-accent-foreground"
                             >
+                                <Tag className="h-3 w-3" />
                                 {tag}
                             </span>
                         ))}
+                    </div>
+                )}
+
+                {profiles.length > 0 && (
+                    <div className="space-y-1.5 rounded-md border border-dashed p-3">
+                        <p className="text-xs font-medium text-foreground">
+                            {t('interestProfile.title')}
+                        </p>
+                        {profiles.map((p) => (
+                            <p key={p.id} className="text-xs text-muted-foreground">
+                                {profileSummary(p, t('interestProfile.untitled'))}
+                            </p>
+                        ))}
+                    </div>
+                )}
+
+                {lead.message && (
+                    <div className="rounded-md bg-muted/60 p-3">
+                        <p className="line-clamp-3 text-xs text-muted-foreground">{lead.message}</p>
                     </div>
                 )}
 
@@ -217,7 +277,26 @@ function LeadCard({ lead }: { lead: ILeadDTO }) {
                         </span>
                     )}
                 </div>
+
+                <LeadActions lead={lead} />
             </CardContent>
         </Card>
     );
+}
+
+function profileSummary(p: IInterestProfileDTO, untitled: string): string {
+    const parts = [
+        p.title || untitled,
+        p.propertyType,
+        p.bedroom ? `${p.bedroom} dorm.` : null,
+        p.maxAmount
+            ? `até ${p.maxAmount.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                  maximumFractionDigits: 0,
+              })}`
+            : null,
+        p.neighborhood?.name ?? p.city?.name,
+    ].filter(Boolean);
+    return parts.join(' · ');
 }

@@ -261,9 +261,13 @@
         "manager": "All leads of your agency.",
         "agent": "The leads assigned to you."
       },
-      "filter": {
-        "stage": "Filter by stage",
-        "all": "All stages"
+      "tabs": {
+        "pending": "Pending",
+        "active": "In progress",
+        "closed": "Closed"
+      },
+      "pool": {
+        "title": "Available in the pool"
       },
       "stages": {
         "NEW": "New",
@@ -289,7 +293,28 @@
       "unnamed": "Unnamed",
       "lastContact": "Last contact",
       "noContact": "No contact yet",
-      "responsible": "Responsible"
+      "responsible": "Responsible",
+      "viewOnMap": "View on map",
+      "sources": {
+        "PROPERTY_TALK": "Property inquiry",
+        "KNOW_MORE": "Learn more",
+        "GENERIC_CONTACT": "Contact",
+        "OTHER": "Other"
+      },
+      "interestProfile": {
+        "title": "Interest profile",
+        "untitled": "Interest profile"
+      },
+      "actions": {
+        "receive": "Receive",
+        "claim": "Claim",
+        "contact": "Contact",
+        "qualify": "Qualify",
+        "convert": "Convert",
+        "discard": "Discard",
+        "success": "Lead updated.",
+        "error": "Could not update. Please try again."
+      }
     },
     "profile": {
       "subtitle": "Your interest profiles saved at this agency.",

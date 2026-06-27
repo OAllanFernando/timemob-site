@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import type { UseFormReturn } from 'react-hook-form';
+import { useWatch, type UseFormReturn } from 'react-hook-form';
 
 import {
     FormControl,
@@ -22,8 +22,10 @@ interface Props {
 export function RegisterAddressFields({ form }: Props) {
     const t = useTranslations('auth.register.address');
 
-    const lat = form.watch('latitude');
-    const lng = form.watch('longitude');
+    // useWatch (not form.watch) so this child re-renders when the map setValue's lat/long — keeps the
+    // pin in sync. form.watch only re-renders the component that called useForm.
+    const lat = useWatch({ control: form.control, name: 'latitude' });
+    const lng = useWatch({ control: form.control, name: 'longitude' });
 
     function handleResolved(addr: ResolvedAddress) {
         form.setValue('latitude', addr.latitude, { shouldDirty: true });
