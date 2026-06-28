@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { AlertCircle, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
+import { AlertCircle, ChevronLeft, ChevronRight, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 
 import {
     useCreateProperty,
@@ -41,6 +41,7 @@ export default function AdminPropertiesPage() {
     const { data, isPending, error } = useMyProperties();
     const del = useDeleteProperty();
     const [open, setOpen] = useState(false);
+    const [expanded, setExpanded] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
 
     function openNew() {
@@ -124,11 +125,30 @@ export default function AdminPropertiesPage() {
             )}
 
             <Sheet open={open} onOpenChange={setOpen}>
-                <SheetContent side="right" className="w-full overflow-y-auto p-6 sm:max-w-2xl">
-                    <SheetHeader className="px-0">
-                        <SheetTitle>{editingId ? 'Editar imóvel' : 'Novo imóvel'}</SheetTitle>
-                    </SheetHeader>
-                    {open && <PropertyEditor propertyId={editingId} onDone={() => setOpen(false)} />}
+                <SheetContent
+                    side="right"
+                    // Inline maxWidth always wins over the component's width classes — 42rem (2xl)
+                    // collapsed, 96vw expanded. Mobile stays full-width (original). No overflow here so
+                    // the round handle can hang outside the left edge; the scroll lives on the inner div.
+                    style={{ maxWidth: expanded ? '96vw' : undefined }}
+                    className="w-full overflow-visible p-0 transition-[max-width] duration-200 sm:max-w-2xl"
+                >
+                    {/* Desktop-only round "pull" handle, hanging off the left edge. Hidden on mobile. */}
+                    <button
+                        type="button"
+                        onClick={() => setExpanded((v) => !v)}
+                        aria-label={expanded ? 'Recolher painel' : 'Expandir painel'}
+                        title={expanded ? 'Recolher' : 'Expandir'}
+                        className="absolute left-0 top-1/2 z-30 hidden size-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border bg-background text-foreground shadow-md transition-colors hover:bg-accent sm:flex"
+                    >
+                        {expanded ? <ChevronRight className="size-5" /> : <ChevronLeft className="size-5" />}
+                    </button>
+                    <div className="h-full overflow-y-auto p-6">
+                        <SheetHeader className="px-0 pr-10">
+                            <SheetTitle>{editingId ? 'Editar imóvel' : 'Novo imóvel'}</SheetTitle>
+                        </SheetHeader>
+                        {open && <PropertyEditor propertyId={editingId} onDone={() => setOpen(false)} />}
+                    </div>
                 </SheetContent>
             </Sheet>
         </div>

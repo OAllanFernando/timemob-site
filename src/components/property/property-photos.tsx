@@ -1,11 +1,16 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 import { ImagePlus, Loader2, Star, Trash2 } from 'lucide-react';
 
 import { useDeletePhoto, usePropertyPhotos, useUploadPhoto } from '@/hooks/use-properties';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+// Mirror the backend multipart limit (spring.servlet.multipart.max-file-size = 25MB) so oversized
+// files are rejected before the request, instead of bouncing off a 413.
+const MAX_FILE_BYTES = 25 * 1024 * 1024;
 
 export function PropertyPhotos({ propertyId }: { propertyId: number }) {
     const { data: photos, isPending } = usePropertyPhotos(propertyId);
@@ -16,9 +21,19 @@ export function PropertyPhotos({ propertyId }: { propertyId: number }) {
 
     async function onFilesChosen(files: FileList | null) {
         if (!files || files.length === 0) return;
+        const all = Array.from(files);
+        const oversized = all.filter((f) => f.size > MAX_FILE_BYTES);
+        if (oversized.length > 0) {
+            toast.error('Imagem muito grande. Tamanho máximo: 25MB.');
+        }
+        const valid = all.filter((f) => f.size <= MAX_FILE_BYTES);
+        if (valid.length === 0) {
+            if (inputRef.current) inputRef.current.value = '';
+            return;
+        }
         setUploading(true);
         try {
-            for (const file of Array.from(files)) {
+            for (const file of valid) {
                 await upload.mutateAsync(file);
             }
         } catch {
