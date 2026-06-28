@@ -256,6 +256,18 @@
       "body": "Estamos preparando uma seleção curada de imóveis para você.",
       "back": "Voltar para o início"
     },
+    "crmDisabled": {
+      "title": "CRM ainda não está ativo",
+      "body": "O painel de atendimento da sua imobiliária ainda não foi liberado. Os contatos recebidos pelo site continuam sendo registrados — fale com a gente para ativar o CRM e acessar tudo.",
+      "contactCta": "Falar com a gente",
+      "logout": "Sair"
+    },
+    "licenseExpired": {
+      "title": "Licença vencida",
+      "body": "O acesso ao painel da sua imobiliária está bloqueado porque a licença não está ativa. Seu site e os contatos recebidos continuam funcionando — renove a licença para voltar a operar.",
+      "renewCta": "Renovar licença",
+      "logout": "Sair"
+    },
     "leads": {
       "description": {
         "manager": "Todos os leads da sua imobiliária.",

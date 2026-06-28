@@ -18,6 +18,7 @@ import {
 import { useAuth } from '@/hooks/use-auth';
 import { customerService } from '@/services/customer-service';
 import type { IInterestProfileDTO, ILeadDTO, LeadStage } from '@/types/customer';
+import { CrmDisabledScreen } from '@/components/billing/crm-disabled-screen';
 import { LeadStageBadge } from '@/components/lead/lead-stage-badge';
 import { LeadActions } from '@/components/lead/lead-actions';
 import { LeadDetailModal } from '@/components/lead/lead-detail-modal';
@@ -43,8 +44,15 @@ const BUCKETS: LeadBucket[] = ['pending', 'active', 'closed'];
 export default function AdminLeadsPage() {
     const tNav = useTranslations('nav.admin');
     const t = useTranslations('pages.leads');
-    const { role } = useAuth();
+    const { role, manager, agent } = useAuth();
     const [tab, setTab] = useState<LeadBucket>('pending');
+
+    // CRM add-on gate: the license is active (else the layout already blocked everything), but if the
+    // tenant didn't buy the CRM the leads area alone is locked. The backend mirrors this (403).
+    const crmEnabled = manager?.tenant?.crmEnabled ?? agent?.tenant?.crmEnabled;
+    if (crmEnabled === false) {
+        return <CrmDisabledScreen />;
+    }
 
     return (
         <div className="space-y-6">

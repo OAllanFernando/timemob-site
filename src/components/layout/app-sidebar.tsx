@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
-    Building2,
     CalendarCheck,
     Headphones,
     Heart,
@@ -16,6 +15,10 @@ import {
     Users,
     type LucideIcon,
 } from 'lucide-react';
+
+import { BrandLogo } from '@/components/brand/brand-logo';
+import { useAuth } from '@/hooks/use-auth';
+import { BRAND_NAME } from '@/lib/brand';
 
 import {
     Sidebar,
@@ -80,21 +83,28 @@ const ACTIVE_INDICATOR =
 export function AppSidebar({ variant }: AppSidebarProps) {
     const pathname = usePathname();
     const tNav = useTranslations('nav');
-    const tBrand = useTranslations('brand');
     const tSidebar = useTranslations('sidebar');
+    const { manager, agent } = useAuth();
 
-    const items = ITEMS_BY_VARIANT[variant];
+    // Hide the Leads entry when the CRM add-on is off (the page itself gates as backstop). The
+    // license is already active here — an expired license is blocked at the layout level.
+    const crmEnabled = manager?.tenant?.crmEnabled ?? agent?.tenant?.crmEnabled;
+    const items = ITEMS_BY_VARIANT[variant].filter(
+        (item) => crmEnabled !== false || item.href !== '/painel/leads',
+    );
 
     return (
         <Sidebar collapsible="icon">
             <SidebarHeader className="gap-2 px-3 py-4">
                 <div className="flex items-center gap-3">
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground shadow-sm">
-                        <Building2 className="size-5" />
-                    </div>
+                    <BrandLogo
+                        markOnly
+                        height={40}
+                        iconClassName="size-10 rounded-md bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+                    />
                     <div className="flex min-w-0 flex-col group-data-[collapsible=icon]:hidden">
                         <span className="font-heading text-lg font-semibold leading-tight tracking-tight">
-                            {tBrand('name')}
+                            {BRAND_NAME}
                         </span>
                         <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-sidebar-foreground/60">
                             {tSidebar(`eyebrowByVariant.${variant}`)}

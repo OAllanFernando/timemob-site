@@ -256,6 +256,18 @@
       "body": "We are curating a hand-picked selection for you.",
       "back": "Back to home"
     },
+    "crmDisabled": {
+      "title": "CRM is not active yet",
+      "body": "Your agency's operations panel hasn't been enabled yet. Contacts captured through the site keep being recorded — talk to us to activate the CRM and access everything.",
+      "contactCta": "Talk to us",
+      "logout": "Sign out"
+    },
+    "licenseExpired": {
+      "title": "License expired",
+      "body": "Access to your agency's panel is blocked because the license isn't active. Your site and the contacts it captures keep working — renew the license to operate again.",
+      "renewCta": "Renew license",
+      "logout": "Sign out"
+    },
     "leads": {
       "description": {
         "manager": "All leads of your agency.",

@@ -117,6 +117,7 @@ export function AuthProvider({ children }: Props) {
                 crossTenant:
                     account?.role === 'CUSTOMER' &&
                     account.currentTenant?.memberOfCurrentTenant === false,
+                licenseActive: account?.licenseActive ?? null,
                 loading: isPending,
                 authenticated: !!account,
                 login,
