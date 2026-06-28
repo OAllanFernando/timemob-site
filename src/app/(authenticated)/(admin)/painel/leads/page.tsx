@@ -10,6 +10,7 @@ import {
     Home,
     Mail,
     MapPin,
+    Maximize2,
     Phone,
     Tag,
 } from 'lucide-react';
@@ -17,8 +18,10 @@ import {
 import { useAuth } from '@/hooks/use-auth';
 import { customerService } from '@/services/customer-service';
 import type { IInterestProfileDTO, ILeadDTO, LeadStage } from '@/types/customer';
+import { CrmDisabledScreen } from '@/components/billing/crm-disabled-screen';
 import { LeadStageBadge } from '@/components/lead/lead-stage-badge';
 import { LeadActions } from '@/components/lead/lead-actions';
+import { LeadDetailModal } from '@/components/lead/lead-detail-modal';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -41,8 +44,15 @@ const BUCKETS: LeadBucket[] = ['pending', 'active', 'closed'];
 export default function AdminLeadsPage() {
     const tNav = useTranslations('nav.admin');
     const t = useTranslations('pages.leads');
-    const { role } = useAuth();
+    const { role, manager, agent } = useAuth();
     const [tab, setTab] = useState<LeadBucket>('pending');
+
+    // CRM add-on gate: the license is active (else the layout already blocked everything), but if the
+    // tenant didn't buy the CRM the leads area alone is locked. The backend mirrors this (403).
+    const crmEnabled = manager?.tenant?.crmEnabled ?? agent?.tenant?.crmEnabled;
+    if (crmEnabled === false) {
+        return <CrmDisabledScreen />;
+    }
 
     return (
         <div className="space-y-6">
@@ -75,6 +85,7 @@ export default function AdminLeadsPage() {
 function LeadsBucket({ bucket }: { bucket: LeadBucket }) {
     const t = useTranslations('pages.leads');
     const [page, setPage] = useState(0);
+    const [selected, setSelected] = useState<ILeadDTO | null>(null);
 
     const { data, isPending, isError } = useQuery({
         queryKey: ['leads', 'list', bucket, page] as const,
@@ -121,7 +132,7 @@ function LeadsBucket({ bucket }: { bucket: LeadBucket }) {
             {mainLeads.length > 0 && (
                 <div className="grid gap-4">
                     {mainLeads.map((lead) => (
-                        <LeadCard key={lead.id} lead={lead} />
+                        <LeadCard key={lead.id} lead={lead} onOpen={() => setSelected(lead)} />
                     ))}
                 </div>
             )}
@@ -133,7 +144,7 @@ function LeadsBucket({ bucket }: { bucket: LeadBucket }) {
                     </p>
                     <div className="grid gap-4">
                         {poolLeads.map((lead) => (
-                            <LeadCard key={lead.id} lead={lead} />
+                            <LeadCard key={lead.id} lead={lead} onOpen={() => setSelected(lead)} />
                         ))}
                     </div>
                 </div>
@@ -170,11 +181,19 @@ function LeadsBucket({ bucket }: { bucket: LeadBucket }) {
                     </div>
                 </div>
             )}
+
+            <LeadDetailModal
+                lead={selected}
+                open={!!selected}
+                onOpenChange={(o) => {
+                    if (!o) setSelected(null);
+                }}
+            />
         </div>
     );
 }
 
-function LeadCard({ lead }: { lead: ILeadDTO }) {
+function LeadCard({ lead, onOpen }: { lead: ILeadDTO; onOpen: () => void }) {
     const t = useTranslations('pages.leads');
     const profiles = lead.interestProfiles ?? [];
 
@@ -182,15 +201,21 @@ function LeadCard({ lead }: { lead: ILeadDTO }) {
         <Card>
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                        <CardTitle className="font-heading text-lg">
+                    <button type="button" onClick={onOpen} className="min-w-0 text-left">
+                        <CardTitle className="font-heading text-lg hover:underline">
                             {lead.name || t('unnamed')}
                         </CardTitle>
                         <p className="mt-1 text-xs text-muted-foreground">
                             #{lead.id} · {t(`sources.${lead.source}`)}
                         </p>
+                    </button>
+                    <div className="flex shrink-0 items-center gap-2">
+                        <LeadStageBadge stage={lead.stage} />
+                        <Button variant="ghost" size="sm" onClick={onOpen}>
+                            <Maximize2 className="h-4 w-4" />
+                            {t('detail.open')}
+                        </Button>
                     </div>
-                    <LeadStageBadge stage={lead.stage} />
                 </div>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">

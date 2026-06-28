@@ -115,11 +115,78 @@ export interface IRealEstateAgentRef {
 export interface ITenantRef {
     id: number;
     name?: string;
+    /**
+     * Whether the tenant has the CRM enabled. Embedded in `manager.tenant`/`agent.tenant` by
+     * `GET /api/site/me`; the operational area gates access on it (leads keep accumulating, but
+     * Manager/Agent are blocked when it's false).
+     */
+    crmEnabled?: boolean;
+}
+
+/**
+ * Public white-label bootstrap for the current tenant's site (`GET /api/site/setup`), resolved
+ * anonymously from the `X-Tenant-Slug` header. Every block is nullable — the front falls back to
+ * the build-time `NEXT_PUBLIC_APP_NAME`, a generic mark, and i18n contact placeholders.
+ */
+export interface ISiteSetupTenant {
+    id?: number | null;
+    name?: string | null;
+    slug?: string | null;
+}
+
+export interface ISiteSetupAgency {
+    id?: number | null;
+    name?: string | null;
+    creciNumber?: string | null;
+    logoUrl?: string | null;
+}
+
+export interface ISiteSetupContact {
+    address?: string | null;
+    phone?: string | null;
+    whatsapp?: string | null;
+    email?: string | null;
+}
+
+export interface ISiteSetupBranch {
+    id?: number;
+    name?: string | null;
+    isHeadquarters?: boolean | null;
+    phone?: string | null;
+    whatsapp?: string | null;
+    email?: string | null;
+    streetName?: string | null;
+    number?: string | null;
+    complement?: string | null;
+    postalCode?: string | null;
+}
+
+export interface ISiteSetup {
+    tenant?: ISiteSetupTenant | null;
+    agency?: ISiteSetupAgency | null;
+    contact?: ISiteSetupContact | null;
+    branches?: ISiteSetupBranch[];
 }
 
 export interface IPropertyRef {
     id: number;
     title?: string;
+}
+
+/**
+ * Lightweight property marker for the lead-detail map (`GET /api/site/properties/nearby`):
+ * coordinates + a price/type label, nothing heavy.
+ */
+export interface IPropertyMapMarker {
+    id: number;
+    title?: string;
+    latitude?: number;
+    longitude?: number;
+    amount?: number;
+    propertyType?: PropertyType;
+    propertyBusinessType?: PropertyBusinessType;
+    bedroom?: number;
+    bathroom?: number;
 }
 
 /**
@@ -309,6 +376,12 @@ export interface IMyAccountResponse {
     agent?: IRealEstateAgent;
     /** Only present when role === 'CUSTOMER'. */
     currentTenant?: ICurrentTenantInfo;
+    /**
+     * Whether the tenant's license is active. Present for operational roles (MANAGER/AGENT). When
+     * false, the whole operational area is blocked (expired/absent license). The CRM add-on is read
+     * separately from `manager.tenant.crmEnabled` / `agent.tenant.crmEnabled`.
+     */
+    licenseActive?: boolean;
 }
 
 /**

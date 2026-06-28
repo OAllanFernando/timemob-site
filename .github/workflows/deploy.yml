@@ -1,14 +1,12 @@
 name: Deploy Site
 
-# Branch per client (custom code per tenant). Convention:
-#   branch name = client slug = APP_NAME = GitHub Environment name = infra folder
-#   (apps/sites/<slug>/) = image name = subdomain.
-# Per-client config (NEXT_PUBLIC_TENANT_SLUG/ID, NEXT_PUBLIC_APP_NAME) lives in the Environment's
-# secrets/variables; shared config (API URL, Maps key, EC2_*, GHCR_PAT) at repo level. `main` is the
-# template and never deploys (only single-segment client branches do; feature branches use a `/`).
+# One deployment per client. The branch name = client slug = APP_NAME = GitHub Environment name =
+# infra folder apps/sites/<slug>/ = image name = subdomain. Per-client config lives in the
+# Environment named exactly like the branch (alvorada-imoveis). `main` and dev branches
+# (fix/..., feat/... — anything with a "/") do NOT deploy.
 #
-# Image → GHCR (ghcr.io/<owner>/<slug>), tags :latest and :<sha>. The EC2 runs the exact sha via
-# IMAGE_TAG. Rollback: run this workflow from the client branch with rollback_tag = an older sha.
+# Image → GHCR (ghcr.io/<owner>/<slug>), tags :latest + :<sha>. The EC2 runs the exact sha via
+# IMAGE_TAG. Rollback: run this workflow from the branch with rollback_tag = an older sha.
 
 on:
   push:
@@ -76,10 +74,10 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
-          envs: DEPLOY_TAG
+          envs: APP_NAME,DEPLOY_TAG
           script: |
             echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
-            cd ~/timemob-infra/apps/sites/${{ github.ref_name }}
+            cd ~/timemob-infra/apps/sites/$APP_NAME
             export IMAGE_TAG="$DEPLOY_TAG"
             docker compose pull
             docker compose up -d

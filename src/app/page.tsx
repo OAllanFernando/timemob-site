@@ -1,11 +1,14 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
-import { Building2, Compass, Handshake, KeyRound, Mail, MapPin, Phone } from 'lucide-react';
+import { Compass, Handshake, KeyRound } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { BrandLogo } from '@/components/brand/brand-logo';
 import { LocaleSwitcher } from '@/components/layout/locale-switcher';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
 import { ContactCtaButton } from '@/components/lead/contact-cta-button';
+import { SiteContactRows, SiteFooterContact } from '@/components/site/site-contact';
+import { BRAND_NAME } from '@/lib/brand';
 
 const PUBLIC_NAV = [
     { href: '/imoveis', key: 'publicProperties' as const },
@@ -22,7 +25,6 @@ const STEPS = [
 
 export default async function HomePage() {
     const t = await getTranslations('landing');
-    const tBrand = await getTranslations('brand');
     const tNav = await getTranslations('nav');
     const tFooter = await getTranslations('footer');
     const year = 2026;
@@ -32,12 +34,7 @@ export default async function HomePage() {
             <header className="sticky top-0 z-30 border-b border-border/60 bg-background/85 backdrop-blur">
                 <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-6">
                     <Link href="/" className="flex items-center gap-2.5">
-                        <span className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                            <Building2 className="size-4" />
-                        </span>
-                        <span className="font-heading text-lg font-semibold tracking-tight">
-                            {tBrand('name')}
-                        </span>
+                        <BrandLogo />
                     </Link>
 
                     <nav className="hidden items-center gap-8 md:flex">
@@ -164,23 +161,18 @@ export default async function HomePage() {
                             </div>
                         </div>
 
-                        <dl className="space-y-6">
-                            <ContactRow
-                                icon={MapPin}
-                                label={t('contact.addressLabel')}
-                                value={t('contact.address')}
-                            />
-                            <ContactRow
-                                icon={Phone}
-                                label={t('contact.phoneLabel')}
-                                value={t('contact.phone')}
-                            />
-                            <ContactRow
-                                icon={Mail}
-                                label={t('contact.emailLabel')}
-                                value={t('contact.email')}
-                            />
-                        </dl>
+                        <SiteContactRows
+                            labels={{
+                                addressLabel: t('contact.addressLabel'),
+                                phoneLabel: t('contact.phoneLabel'),
+                                emailLabel: t('contact.emailLabel'),
+                            }}
+                            fallback={{
+                                address: t('contact.address'),
+                                phone: t('contact.phone'),
+                                email: t('contact.email'),
+                            }}
+                        />
                     </div>
                 </section>
             </main>
@@ -189,12 +181,7 @@ export default async function HomePage() {
                 <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
                     <div className="space-y-3">
                         <div className="flex items-center gap-2.5">
-                            <span className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                                <Building2 className="size-4" />
-                            </span>
-                            <span className="font-heading text-base font-semibold tracking-tight">
-                                {tBrand('name')}
-                            </span>
+                            <BrandLogo height={32} iconClassName="size-8" nameClassName="text-base" />
                         </div>
                         <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
                             {tFooter('tagline')}
@@ -211,9 +198,13 @@ export default async function HomePage() {
                     </FooterColumn>
 
                     <FooterColumn title={tFooter('contactLabel')}>
-                        <span className="text-sm text-muted-foreground">{t('contact.address')}</span>
-                        <span className="text-sm text-muted-foreground">{t('contact.phone')}</span>
-                        <span className="text-sm text-muted-foreground">{t('contact.email')}</span>
+                        <SiteFooterContact
+                            fallback={{
+                                address: t('contact.address'),
+                                phone: t('contact.phone'),
+                                email: t('contact.email'),
+                            }}
+                        />
                     </FooterColumn>
 
                     <FooterColumn title={tFooter('socialLabel')}>
@@ -226,36 +217,12 @@ export default async function HomePage() {
                 <div className="border-t border-border/60">
                     <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 text-xs text-muted-foreground">
                         <span>
-                            © {year} {tBrand('name')}. {tFooter('rights')}
+                            © {year} {BRAND_NAME}. {tFooter('rights')}
                         </span>
-                        <span className="font-mono">{tBrand('siteName')}</span>
+                        <span className="font-mono">{BRAND_NAME}</span>
                     </div>
                 </div>
             </footer>
-        </div>
-    );
-}
-
-function ContactRow({
-    icon: Icon,
-    label,
-    value,
-}: {
-    icon: typeof MapPin;
-    label: string;
-    value: string;
-}) {
-    return (
-        <div className="flex items-start gap-4">
-            <span className="mt-1 flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary">
-                <Icon className="size-4" />
-            </span>
-            <div className="space-y-1">
-                <dt className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                    {label}
-                </dt>
-                <dd className="text-base text-foreground">{value}</dd>
-            </div>
         </div>
     );
 }

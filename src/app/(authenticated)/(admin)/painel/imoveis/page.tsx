@@ -1,17 +1,166 @@
-import { getTranslations } from 'next-intl/server';
+'use client';
 
-import { PlaceholderCard } from '@/components/layout/placeholder-card';
+import { useState } from 'react';
+import { AlertCircle, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 
-export default async function AdminPropertiesPage() {
-    const tNav = await getTranslations('nav.admin');
-    const tPlaceholder = await getTranslations('pages.placeholder');
+import {
+    useCreateProperty,
+    useDeleteProperty,
+    useMyProperties,
+    useMyProperty,
+    useUpdateProperty,
+} from '@/hooks/use-properties';
+import { PropertyForm, propertyToForm } from '@/components/property/property-form';
+import { PropertyPhotos } from '@/components/property/property-photos';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+} from '@/components/ui/sheet';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+const BUSINESS_LABELS: Record<string, string> = { SALE: 'Venda', RENT: 'Aluguel', DAILY_RENT: 'Temporada' };
+const STATUS_LABELS: Record<string, string> = {
+    DRAFT: 'Rascunho',
+    PUBLISHED: 'Publicado',
+    HIDDEN: 'Oculto',
+    RESERVED: 'Reservado',
+    SOLD: 'Vendido',
+    RENTED: 'Alugado',
+    WAITING_REVISION: 'Aguardando revisão',
+    DISAPPROVED: 'Reprovado',
+};
+
+export default function AdminPropertiesPage() {
+    const { data, isPending, error } = useMyProperties();
+    const del = useDeleteProperty();
+    const [open, setOpen] = useState(false);
+    const [editingId, setEditingId] = useState<number | null>(null);
+
+    function openNew() {
+        setEditingId(null);
+        setOpen(true);
+    }
+    function openEdit(id: number) {
+        setEditingId(id);
+        setOpen(true);
+    }
+    function handleDelete(id: number) {
+        if (window.confirm('Remover este imóvel? Esta ação não pode ser desfeita.')) {
+            del.mutate(id);
+        }
+    }
 
     return (
         <div className="space-y-6">
-            <h1 className="font-heading text-3xl font-medium tracking-tight">
-                {tNav('properties')}
-            </h1>
-            <PlaceholderCard title={tPlaceholder('title')} body={tPlaceholder('body')} />
+            <header className="flex items-center justify-between gap-4">
+                <h1 className="font-heading text-3xl font-medium tracking-tight">Imóveis</h1>
+                <Button onClick={openNew}>
+                    <Plus className="mr-1 size-4" />
+                    Novo imóvel
+                </Button>
+            </header>
+
+            {error && (
+                <Alert variant="destructive">
+                    <AlertCircle className="size-4" />
+                    <AlertDescription>Não foi possível carregar os imóveis.</AlertDescription>
+                </Alert>
+            )}
+
+            {isPending ? (
+                <div className="space-y-3">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                        <Skeleton key={i} className="h-20 w-full" />
+                    ))}
+                </div>
+            ) : !data || data.length === 0 ? (
+                <Card>
+                    <CardContent className="py-12 text-center text-sm text-muted-foreground">
+                        Nenhum imóvel cadastrado ainda. Clique em “Novo imóvel” para começar.
+                    </CardContent>
+                </Card>
+            ) : (
+                <div className="space-y-3">
+                    {data.map((p) => (
+                        <Card key={p.id}>
+                            <CardContent className="flex flex-wrap items-center justify-between gap-4 py-4">
+                                <div className="min-w-0 space-y-1">
+                                    <p className="truncate font-medium">{p.title || `Imóvel #${p.id}`}</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        {p.amount != null ? BRL.format(p.amount) : '—'}
+                                        {p.propertyBusinessType
+                                            ? ` · ${BUSINESS_LABELS[p.propertyBusinessType] ?? p.propertyBusinessType}`
+                                            : ''}
+                                        {p.propertyStatus
+                                            ? ` · ${STATUS_LABELS[p.propertyStatus] ?? p.propertyStatus}`
+                                            : ''}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Button variant="outline" size="sm" onClick={() => openEdit(p.id)}>
+                                        <Pencil className="mr-1 size-3.5" />
+                                        Editar
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleDelete(p.id)}
+                                        disabled={del.isPending}
+                                    >
+                                        <Trash2 className="size-3.5 text-destructive" />
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            )}
+
+            <Sheet open={open} onOpenChange={setOpen}>
+                <SheetContent side="right" className="w-full overflow-y-auto p-6 sm:max-w-2xl">
+                    <SheetHeader className="px-0">
+                        <SheetTitle>{editingId ? 'Editar imóvel' : 'Novo imóvel'}</SheetTitle>
+                    </SheetHeader>
+                    {open && <PropertyEditor propertyId={editingId} onDone={() => setOpen(false)} />}
+                </SheetContent>
+            </Sheet>
+        </div>
+    );
+}
+
+function PropertyEditor({ propertyId, onDone }: { propertyId: number | null; onDone: () => void }) {
+    const isEdit = propertyId != null;
+    const { data: existing, isPending } = useMyProperty(propertyId);
+    const createMutation = useCreateProperty();
+    const updateMutation = useUpdateProperty(propertyId ?? 0);
+    const mutation = isEdit ? updateMutation : createMutation;
+
+    if (isEdit && isPending) {
+        return (
+            <div className="flex items-center justify-center py-16 text-muted-foreground">
+                <Loader2 className="size-5 animate-spin" />
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-6">
+            <PropertyForm
+                key={propertyId ?? 'new'}
+                defaultValues={isEdit && existing ? propertyToForm(existing) : undefined}
+                submitting={mutation.isPending}
+                submitLabel={isEdit ? 'Salvar alterações' : 'Cadastrar'}
+                onSubmit={(values) => mutation.mutate(values, { onSuccess: onDone })}
+                onCancel={onDone}
+            />
+            {isEdit && propertyId != null && <PropertyPhotos propertyId={propertyId} />}
         </div>
     );
 }

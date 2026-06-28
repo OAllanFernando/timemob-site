@@ -41,6 +41,11 @@ export interface IAuthContext {
     currentTenant: import('./customer').ICurrentTenantInfo | null;
     /** True iff CUSTOMER logged-in but NOT yet member of this site's tenant. */
     crossTenant: boolean;
+    /**
+     * Whether the tenant's license is active (MANAGER/AGENT). `null` until known. `false` blocks the
+     * whole operational area. The CRM add-on is read from `manager`/`agent`'s `tenant.crmEnabled`.
+     */
+    licenseActive: boolean | null;
     authenticated: boolean;
     loading: boolean;
     login: (data: ILoginRequest) => Promise<void>;

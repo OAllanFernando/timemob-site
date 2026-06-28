@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
-import { Building2 } from 'lucide-react';
 
+import { BrandLogo } from '@/components/brand/brand-logo';
 import { LocaleSwitcher } from '@/components/layout/locale-switcher';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
 
@@ -18,7 +18,6 @@ export default async function PublicLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const tBrand = await getTranslations('brand');
     const tNav = await getTranslations('nav');
 
     return (
@@ -31,12 +30,7 @@ export default async function PublicLayout({
             <header className="sticky top-0 z-30 border-b border-border/60 bg-background/85 backdrop-blur">
                 <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-6">
                     <Link href="/" className="flex items-center gap-2.5">
-                        <span className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                            <Building2 className="size-4" />
-                        </span>
-                        <span className="font-heading text-lg font-semibold tracking-tight">
-                            {tBrand('name')}
-                        </span>
+                        <BrandLogo />
                     </Link>
 
                     <nav className="hidden items-center gap-8 md:flex">

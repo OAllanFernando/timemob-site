@@ -9,6 +9,7 @@ import './globals.css';
 import { AppProvider } from '@/providers/app-provider';
 import { QueryProvider } from '@/providers/query-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
+import { BRAND_NAME } from '@/lib/brand';
 
 const inter = Inter({
     variable: '--font-inter',
@@ -30,7 +31,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-    title: 'TimeMob Site',
+    title: BRAND_NAME,
     description: 'Site da sua imobiliária',
 };
 
