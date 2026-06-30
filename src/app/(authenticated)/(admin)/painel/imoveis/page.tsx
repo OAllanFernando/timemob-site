@@ -1,7 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { AlertCircle, ChevronLeft, ChevronRight, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
+import {
+    AlertCircle,
+    ChevronLeft,
+    ChevronRight,
+    FileCheck2,
+    Loader2,
+    Pencil,
+    Plus,
+    Trash2,
+} from 'lucide-react';
 
 import {
     useCreateProperty,
@@ -10,6 +20,7 @@ import {
     useMyProperty,
     useUpdateProperty,
 } from '@/hooks/use-properties';
+import { propertyService } from '@/services/property-service';
 import { PropertyForm, propertyToForm } from '@/components/property/property-form';
 import { PropertyPhotos } from '@/components/property/property-photos';
 import { PropertyDocuments } from '@/components/property/property-documents';
@@ -44,6 +55,19 @@ export default function AdminPropertiesPage() {
     const [open, setOpen] = useState(false);
     const [expanded, setExpanded] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
+    const [openingAuth, setOpeningAuth] = useState<number | null>(null);
+
+    async function openSaleAuth(propertyId: number, mediaId: number) {
+        setOpeningAuth(propertyId);
+        try {
+            const res = await propertyService.getDocumentUrl(propertyId, mediaId);
+            window.open(res.data.url, '_blank', 'noopener,noreferrer');
+        } catch {
+            toast.error('Não foi possível abrir a autorização de venda');
+        } finally {
+            setOpeningAuth(null);
+        }
+    }
 
     function openNew() {
         setEditingId(null);
@@ -106,6 +130,21 @@ export default function AdminPropertiesPage() {
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
+                                    {p.saleAuthorizationMediaId != null && (
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            disabled={openingAuth === p.id}
+                                            onClick={() => openSaleAuth(p.id, p.saleAuthorizationMediaId!)}
+                                        >
+                                            {openingAuth === p.id ? (
+                                                <Loader2 className="mr-1 size-3.5 animate-spin" />
+                                            ) : (
+                                                <FileCheck2 className="mr-1 size-3.5" />
+                                            )}
+                                            Autorização
+                                        </Button>
+                                    )}
                                     <Button variant="outline" size="sm" onClick={() => openEdit(p.id)}>
                                         <Pencil className="mr-1 size-3.5" />
                                         Editar

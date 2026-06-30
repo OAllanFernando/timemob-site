@@ -91,6 +91,7 @@ export interface IPropertyListItem {
     bedroom?: number | null;
     bathroom?: number | null;
     carVacancy?: number | null;
+    saleAuthorizationMediaId?: number | null;
 }
 
 /** Write payload. Required fields match the backend `@NotNull` columns. */
