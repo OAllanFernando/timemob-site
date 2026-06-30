@@ -60,7 +60,15 @@ export interface IMediaSummary {
     url?: string;
 }
 
-/** A property photo (`/api/site/properties/{id}/media`). */
+/** Document category (mirrors backend `DocumentCategory`). */
+export type DocumentCategory =
+    | 'SALE_AUTHORIZATION'
+    | 'PROPERTY_REGISTRATION'
+    | 'DEED'
+    | 'CONTRACT'
+    | 'OTHER';
+
+/** A property media row — photo (`/media`) or document (`/documents`). */
 export interface IMedia {
     id: number;
     url?: string;
@@ -68,6 +76,7 @@ export interface IMedia {
     isPrimary?: boolean;
     order?: number;
     mediaType?: string;
+    documentCategory?: DocumentCategory;
 }
 
 /** Row shape for the inventory list (`GET /api/site/properties`). */

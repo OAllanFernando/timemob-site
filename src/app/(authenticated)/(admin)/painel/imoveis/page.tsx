@@ -12,6 +12,7 @@ import {
 } from '@/hooks/use-properties';
 import { PropertyForm, propertyToForm } from '@/components/property/property-form';
 import { PropertyPhotos } from '@/components/property/property-photos';
+import { PropertyDocuments } from '@/components/property/property-documents';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -180,7 +181,12 @@ function PropertyEditor({ propertyId, onDone }: { propertyId: number | null; onD
                 onSubmit={(values) => mutation.mutate(values, { onSuccess: onDone })}
                 onCancel={onDone}
             />
-            {isEdit && propertyId != null && <PropertyPhotos propertyId={propertyId} />}
+            {isEdit && propertyId != null && (
+                <>
+                    <PropertyPhotos propertyId={propertyId} />
+                    <PropertyDocuments propertyId={propertyId} />
+                </>
+            )}
         </div>
     );
 }

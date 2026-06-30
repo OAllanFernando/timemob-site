@@ -3,7 +3,13 @@ import { toDomainError } from '@/lib/api/error';
 import { toResponse } from '@/lib/api/response';
 import type { DomainResponse, ISpringPage } from '@/types/domain-response';
 import type { IPropertyMapMarker } from '@/types/customer';
-import type { IMedia, IProperty, IPropertyInput, IPropertyListItem } from '@/types/property';
+import type {
+    DocumentCategory,
+    IMedia,
+    IProperty,
+    IPropertyInput,
+    IPropertyListItem,
+} from '@/types/property';
 
 class PropertyService {
     /**
@@ -115,6 +121,75 @@ class PropertyService {
     async deletePhoto(propertyId: number, mediaId: number): Promise<DomainResponse<void>> {
         try {
             return toResponse(await api.delete<void>(`/site/properties/${propertyId}/media/${mediaId}`));
+        } catch (err) {
+            throw toDomainError(err);
+        }
+    }
+
+    /** Make a photo the cover (`PUT /api/site/properties/{id}/media/{mediaId}/primary`). */
+    async setPrimaryPhoto(propertyId: number, mediaId: number): Promise<DomainResponse<IMedia[]>> {
+        try {
+            return toResponse(
+                await api.put<IMedia[]>(`/site/properties/${propertyId}/media/${mediaId}/primary`),
+            );
+        } catch (err) {
+            throw toDomainError(err);
+        }
+    }
+
+    /** Persist a new photo order (`PUT /api/site/properties/{id}/media/order`), body = ordered ids. */
+    async reorderPhotos(propertyId: number, ids: number[]): Promise<DomainResponse<IMedia[]>> {
+        try {
+            return toResponse(await api.put<IMedia[]>(`/site/properties/${propertyId}/media/order`, ids));
+        } catch (err) {
+            throw toDomainError(err);
+        }
+    }
+
+    /** Active documents of a property (`GET /api/site/properties/{id}/documents`). */
+    async listDocuments(propertyId: number): Promise<DomainResponse<IMedia[]>> {
+        try {
+            return toResponse(await api.get<IMedia[]>(`/site/properties/${propertyId}/documents`));
+        } catch (err) {
+            throw toDomainError(err);
+        }
+    }
+
+    /** Upload a private document (`POST /api/site/properties/{id}/documents`, multipart) with a category. */
+    async uploadDocument(
+        propertyId: number,
+        file: File,
+        category: DocumentCategory,
+    ): Promise<DomainResponse<IMedia>> {
+        try {
+            const form = new FormData();
+            form.append('file', file);
+            form.append('category', category);
+            return toResponse(
+                await api.post<IMedia>(`/site/properties/${propertyId}/documents`, form, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                }),
+            );
+        } catch (err) {
+            throw toDomainError(err);
+        }
+    }
+
+    /** Short-lived presigned URL to view a document (`GET .../documents/{mediaId}/url`). */
+    async getDocumentUrl(propertyId: number, mediaId: number): Promise<DomainResponse<{ url: string }>> {
+        try {
+            return toResponse(
+                await api.get<{ url: string }>(`/site/properties/${propertyId}/documents/${mediaId}/url`),
+            );
+        } catch (err) {
+            throw toDomainError(err);
+        }
+    }
+
+    /** Remove a document (`DELETE .../documents/{mediaId}`, soft delete). */
+    async deleteDocument(propertyId: number, mediaId: number): Promise<DomainResponse<void>> {
+        try {
+            return toResponse(await api.delete<void>(`/site/properties/${propertyId}/documents/${mediaId}`));
         } catch (err) {
             throw toDomainError(err);
         }

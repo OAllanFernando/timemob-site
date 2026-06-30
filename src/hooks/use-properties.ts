@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 
 import { propertyService } from '@/services/property-service';
 import type { PropertyInput } from '@/lib/schemas/property';
-import type { IPropertyInput, IPropertyNeighborhood } from '@/types/property';
+import type { DocumentCategory, IPropertyInput, IPropertyNeighborhood } from '@/types/property';
 
 export const PROPERTIES_KEY = ['site', 'properties'] as const;
 const PROPERTY_KEY = (id: number) => ['site', 'property', id] as const;
@@ -157,5 +157,69 @@ export function useDeletePhoto(id: number) {
             queryClient.invalidateQueries({ queryKey: PROPERTIES_KEY });
         },
         onError: (err: Error) => toast.error(err.message || 'Não foi possível remover a foto'),
+    });
+}
+
+export function useSetPrimaryPhoto(id: number) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (mediaId: number) => propertyService.setPrimaryPhoto(id, mediaId),
+        onSuccess: () => {
+            toast.success('Capa definida');
+            queryClient.invalidateQueries({ queryKey: PHOTOS_KEY(id) });
+            queryClient.invalidateQueries({ queryKey: PROPERTIES_KEY });
+        },
+        onError: (err: Error) => toast.error(err.message || 'Não foi possível definir a capa'),
+    });
+}
+
+const DOCUMENTS_KEY = (id: number) => ['site', 'property', id, 'documents'] as const;
+
+export function usePropertyDocuments(id: number | null | undefined) {
+    return useQuery({
+        queryKey: DOCUMENTS_KEY(id ?? -1),
+        queryFn: async () => (await propertyService.listDocuments(id as number)).data,
+        enabled: id != null,
+    });
+}
+
+export function useUploadDocument(id: number) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ file, category }: { file: File; category: DocumentCategory }) =>
+            propertyService.uploadDocument(id, file, category),
+        onSuccess: () => {
+            toast.success('Documento enviado');
+            queryClient.invalidateQueries({ queryKey: DOCUMENTS_KEY(id) });
+        },
+        onError: (err: Error) => toast.error(err.message || 'Não foi possível enviar o documento'),
+    });
+}
+
+export function useDeleteDocument(id: number) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (mediaId: number) => propertyService.deleteDocument(id, mediaId),
+        onSuccess: () => {
+            toast.success('Documento removido');
+            queryClient.invalidateQueries({ queryKey: DOCUMENTS_KEY(id) });
+        },
+        onError: (err: Error) => toast.error(err.message || 'Não foi possível remover o documento'),
+    });
+}
+
+export function useReorderPhotos(id: number) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (ids: number[]) => propertyService.reorderPhotos(id, ids),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: PHOTOS_KEY(id) });
+            queryClient.invalidateQueries({ queryKey: PROPERTIES_KEY });
+        },
+        onError: (err: Error) => {
+            toast.error(err.message || 'Não foi possível reordenar as fotos');
+            // Revert the optimistic order to the server's truth.
+            queryClient.invalidateQueries({ queryKey: PHOTOS_KEY(id) });
+        },
     });
 }
