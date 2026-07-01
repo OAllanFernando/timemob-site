@@ -61,9 +61,15 @@ export default function AdminPropertiesPage() {
         setOpeningAuth(propertyId);
         try {
             const res = await propertyService.getDocumentUrl(propertyId, mediaId);
-            window.open(res.data.url, '_blank', 'noopener,noreferrer');
+            // Presigned URL carries Content-Disposition: attachment → anchor click downloads it.
+            const a = document.createElement('a');
+            a.href = res.data.url;
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
         } catch {
-            toast.error('Não foi possível abrir a autorização de venda');
+            toast.error('Não foi possível baixar a autorização de venda');
         } finally {
             setOpeningAuth(null);
         }

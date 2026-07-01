@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Eye, FileText, Loader2, Trash2, Upload } from 'lucide-react';
+import { Download, FileText, Loader2, Trash2, Upload } from 'lucide-react';
 
 import {
     useDeleteDocument,
@@ -34,6 +34,17 @@ const CATEGORY_LABELS: Record<string, string> = Object.fromEntries(
     CATEGORIES.map((c) => [c.value, c.label]),
 );
 
+// The presigned URL already carries Content-Disposition: attachment, so a plain anchor click
+// downloads (works cross-origin) instead of navigating to the file.
+function triggerDownload(url: string) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+}
+
 export function PropertyDocuments({ propertyId }: { propertyId: number }) {
     const { data: docs, isPending } = usePropertyDocuments(propertyId);
     const upload = useUploadDocument(propertyId);
@@ -62,13 +73,13 @@ export function PropertyDocuments({ propertyId }: { propertyId: number }) {
         }
     }
 
-    async function openDocument(mediaId: number) {
+    async function downloadDocument(mediaId: number) {
         setOpening(mediaId);
         try {
             const res = await propertyService.getDocumentUrl(propertyId, mediaId);
-            window.open(res.data.url, '_blank', 'noopener,noreferrer');
+            triggerDownload(res.data.url);
         } catch {
-            toast.error('Não foi possível abrir o documento');
+            toast.error('Não foi possível baixar o documento');
         } finally {
             setOpening(null);
         }
@@ -124,14 +135,14 @@ export function PropertyDocuments({ propertyId }: { propertyId: number }) {
                         size="sm"
                         className="w-fit"
                         disabled={opening === saleAuth.id}
-                        onClick={() => openDocument(saleAuth.id)}
+                        onClick={() => downloadDocument(saleAuth.id)}
                     >
                         {opening === saleAuth.id ? (
                             <Loader2 className="mr-1 size-4 animate-spin" />
                         ) : (
-                            <Eye className="mr-1 size-4" />
+                            <Download className="mr-1 size-4" />
                         )}
-                        Ver autorização de venda
+                        Baixar autorização de venda
                     </Button>
                 )}
             </CardHeader>
@@ -163,14 +174,14 @@ export function PropertyDocuments({ propertyId }: { propertyId: number }) {
                                         variant="ghost"
                                         size="sm"
                                         disabled={opening === doc.id}
-                                        onClick={() => openDocument(doc.id)}
+                                        onClick={() => downloadDocument(doc.id)}
                                     >
                                         {opening === doc.id ? (
                                             <Loader2 className="size-4 animate-spin" />
                                         ) : (
-                                            <Eye className="size-4" />
+                                            <Download className="size-4" />
                                         )}
-                                        <span className="ml-1 hidden sm:inline">Ver</span>
+                                        <span className="ml-1 hidden sm:inline">Baixar</span>
                                     </Button>
                                     <Button
                                         type="button"
